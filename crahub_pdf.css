@@ -1,0 +1,167 @@
+:root {
+    --primary-color-1: #006472;
+    --primary-color-2: #1cb1d1;
+    --secondary-color-1: #003963;
+    --secondary-color-2: #f06c02;
+    --background-color: #ffffff;
+    --text-color: #000000;
+}
+
+@page {
+    /* Increased for better print margins */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Roboto, "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: justify;
+    line-height: 1.8;
+    /* Slightly increased for readability */
+    font-size: 1.2em;
+    /* Adjusted for better scaling */
+    color: #111;
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    padding: 0.5em 0 0.25em;
+}
+
+h1 {
+    color: var(--primary-color-1);
+    font-size: 2.5em;
+    /* Increased for better emphasis */
+    margin-top: 4em;
+    margin-bottom: 2em;
+    text-align: center;
+}
+
+h2 {
+    color: var(--primary-color-1);
+    font-size: 2em;
+    /* Adjusted for hierarchy */
+    margin-top: 0;
+    margin-bottom: 1.5em;
+    break-before: page;
+}
+
+h3 {
+    font-size: 1.75em;
+}
+
+h4 {
+    font-size: 1.5em;
+}
+
+h5 {
+    font-size: 1.25em;
+}
+
+h6 {
+    font-size: 1em;
+    text-transform: uppercase;
+}
+
+p {
+    margin: 0.5em 0 1.5em;
+    /* Increased bottom margin for spacing */
+}
+
+blockquote {
+    margin: 1em 0 1.5em;
+    padding-left: 1em;
+    padding-right: 1.5em;
+    border-left: 4px solid gainsboro;
+    font-style: italic;
+}
+
+ul,
+ol {
+    margin: 0;
+    margin-left: 1.5em;
+    /* Increased for better indentation */
+    padding: 0 1.5em 1em;
+}
+
+pre {
+    white-space: pre-wrap;
+    font-size: 1em;
+    /* Adjusted for consistency */
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code,
+p code,
+li code,
+pre code {
+    background-color: #f8f8f8;
+    padding: 0.2em 0.4em;
+    border: 1px solid #f8f8f8;
+    border-radius: 0.25em;
+    font-family: monospace;
+    font-size: 1em;
+    /* Unified font size for inline code */
+}
+
+pre code {
+    display: block;
+    padding: 0.75em;
+}
+
+img {
+    max-width: 100%;
+    margin: 1.5em 0;
+    /* Increased for better spacing */
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    display: block;
+    margin: 1em 0 2em;
+    /* Increased bottom margin */
+    width: 100%;
+    overflow: auto;
+}
+
+table th,
+table td {
+    padding: 0.75em 1.5em;
+    /* Increased padding for readability */
+    border: 1px solid gainsboro;
+}
+
+table th {
+    font-weight: 600;
+}
+
+table tr {
+    background-color: white;
+    border-top: 1px solid gainsboro;
+}
+
+table tr:nth-child(2n) {
+    background-color: whitesmoke;
+}
+
+a {
+    color: var(--primary-color-2);
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
