@@ -1,4 +1,5 @@
 :root {
+    font-size: 24px;
     --primary-color-1: #006472;
     --primary-color-2: #1cb1d1;
     --secondary-color-1: #003963;
@@ -11,7 +12,7 @@ body {
     font-family: Roboto, "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: justify;
     line-height: 1.8;
-    font-size: 16px;
+    font-size: 1rem;
     color: #111;
     margin: 0;
 }
@@ -23,51 +24,51 @@ h4,
 h5,
 h6 {
     margin: 0;
-    padding: 0.5em 0 0.25em;
+    padding: 0.5rem 0 0.25rem;
 }
 
 h1 {
     color: var(--primary-color-1);
-    font-size: 2.5em;
-    margin-top: 4em;
-    margin-bottom: 4em;
+    font-size: 2.5rem;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
     text-align: center;
 }
 
 h2 {
     color: var(--primary-color-1);
-    font-size: 2em;
+    font-size: 2rem;
     margin-top: 0;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.5rem;
     break-before: page;
 }
 
 h3 {
     color: var(--primary-color-1);
-    font-size: 1.75em;
+    font-size: 1.75rem;
 }
 
 h4 {
-    font-size: 1.5em;
+    font-size: 1.5rem;
 }
 
 h5 {
-    font-size: 1.25em;
+    font-size: 1.25rem;
 }
 
 h6 {
-    font-size: 1em;
+    font-size: 1rem;
     text-transform: uppercase;
 }
 
 p {
-    margin: 0.5em 0 1.5em;
+    margin: 0.5rem 0 1.5rem;
 }
 
 blockquote {
-    margin: 1em 0 1.5em;
-    padding-left: 1em;
-    padding-right: 1.5em;
+    margin: 1rem 0 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1.5rem;
     border-left: 4px solid gainsboro;
     font-style: italic;
 }
@@ -75,13 +76,13 @@ blockquote {
 ul,
 ol {
     margin: 0;
-    margin-left: 1.5em;
-    padding: 0 1.5em 1em;
+    margin-left: 1.5rem;
+    padding: 0 1.5rem 1rem;
 }
 
 pre {
     white-space: pre-wrap;
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 h1 code,
@@ -94,35 +95,35 @@ p code,
 li code,
 pre code {
     background-color: #f8f8f8;
-    padding: 0.2em 0.4em;
+    padding: 0.2rem 0.4rem;
     border: 1px solid #f8f8f8;
-    border-radius: 0.25em;
+    border-radius: 0.25rem;
     font-family: monospace;
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 pre code {
     display: block;
-    padding: 0.75em;
+    padding: 0.75rem;
 }
 
 img {
     max-width: 100%;
-    margin: 1.5em 0;
+    margin: 1.5rem 0;
 }
 
 table {
     border-spacing: 0;
     border-collapse: collapse;
     display: block;
-    margin: 1em 0 2em;
+    margin: 1rem 0 2rem;
     width: 100%;
     overflow: auto;
 }
 
 table th,
 table td {
-    padding: 0.75em 1.5em;
+    padding: 0.75rem 1.5rem;
     border: 1px solid gainsboro;
 }
 
@@ -153,8 +154,8 @@ li {
 /* Select the <li> element that contains a <ul> with the class 'cartouche' */
 li:has(> div.cartouche) {
     list-style-type: disc;
-    margin-bottom: 2em;
-    border-bottom: 3px solid var(--primary-color-2);
+    margin-bottom: 3rem;
+    border-bottom: 0.4rem solid var(--primary-color-2);
 
 }
 
@@ -162,38 +163,22 @@ li:has(> div.cartouche) {
 .cartouche {
     display: flex;
     flex-direction: column;
-    font-size: 1em;
-    border-top: 1px solid var(--primary-color-2);
-    padding: 1em;
+    border-top: 0.15rem solid var(--primary-color-2);
+    padding: 1rem;
 
-    /* Inherit the font size from the parent (e.g., body) */
 }
 
-/* Title container styling */
-.cartouche-title h4 {
-    margin: 0;
-    color: var(--primary-color-1);
-    display: none;
-}
-
-
-/* URL container styling */
-.cartouche-url a {
-    text-decoration: none;
-    word-break: break-word;
-    /* Ensure long URLs wrap */
-}
+.cartouche>div {}
 
 /* Content container styling */
-.cartouche-content {
+.cartouche-columns {
     display: flex;
     flex-wrap: wrap;
-    /* Allow items to wrap into multiple rows */
-    column-gap: 2em;
+    column-gap: 2rem;
 }
 
-.cartouche-content>div {
-    flex: 1 1 calc(50% - 1em);
+.cartouche-columns>div {
+    flex: 1 1 calc(50% - 1rem);
     /* Two columns with spacing */
     box-sizing: border-box;
 }

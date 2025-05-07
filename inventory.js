@@ -7,15 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let cartouche = document.createElement('div');
       cartouche.classList.add('cartouche');
 
-      // Create containers for title, URL, and other elements
-      let titleContainer = document.createElement('div');
-      titleContainer.classList.add('cartouche-title');
-
-      let urlContainer = document.createElement('div');
-      urlContainer.classList.add('cartouche-url');
-
-      let contentContainer = document.createElement('div');
-      contentContainer.classList.add('cartouche-content');
+      // Create container for columns
+      let columnContainer = document.createElement('div');
+      columnContainer.classList.add('cartouche-columns');
 
       ul.querySelectorAll('li').forEach(li => {
         let key = li.querySelector('strong').textContent.replace(':', '').trim(); // Extract the bold text as the key
@@ -28,34 +22,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (key === 'Title') {
-          // Create a new h4 element for the title
           element = document.createElement('div');
           element.innerHTML = `<strong>${key}:</strong> ${value}`;
-          contentContainer.appendChild(element);
-          titleContainer.appendChild(element);
+          cartouche.appendChild(element);
         } else if (key === 'URL') {
           // Create a new anchor element for the URL
           element = document.createElement('div');
           element.innerHTML = `<strong>${key}:</strong> ${value}`;
-          contentContainer.appendChild(element);
-          urlContainer.appendChild(element);
+          cartouche.appendChild(element);
         } else {
           // Create a div for other key-value pairs
           element = document.createElement('div');
           element.innerHTML = `<strong>${key}:</strong> ${value}`;
-          contentContainer.appendChild(element);
+          columnContainer.appendChild(element);
         }
       });
 
       // Append containers to the cartouche
-      if (titleContainer.children.length > 0) {
-        cartouche.appendChild(titleContainer);
-      }
-      if (urlContainer.children.length > 0) {
-        cartouche.appendChild(urlContainer);
-      }
-      if (contentContainer.children.length > 0) {
-        cartouche.appendChild(contentContainer);
+
+      if (columnContainer.children.length > 0) {
+        cartouche.appendChild(columnContainer);
       }
 
       if (cartouche.children.length > 0) {
