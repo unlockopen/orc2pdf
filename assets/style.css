@@ -11,7 +11,7 @@ body {
     font-family: Roboto, "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: justify;
     line-height: 1.8;
-    font-size: 1.2em;
+    font-size: 16px;
     color: #111;
     margin: 0;
 }
@@ -150,18 +150,50 @@ li {
     margin-left: 0;
 }
 
-ul.cartouche {
-    list-style: none;
-    margin-left: 2em;
-    margin-right: 2em;
-    padding: 1em;
-    border-radius: 2em;
-    border: 5px solid var(--primary-color-2);
-    margin-bottom: 1.6em;
-    break-inside: avoid;
+/* Select the <li> element that contains a <ul> with the class 'cartouche' */
+li:has(> div.cartouche) {
+    list-style-type: disc;
+    margin-bottom: 2em;
+    border-bottom: 3px solid var(--primary-color-2);
+
 }
 
-/* Select the <li> element that contains a <ul> with the class 'cartouche' */
-li:has(> ul.cartouche) {
-    list-style-type: disc;
+/* Style the cartouche container */
+.cartouche {
+    display: flex;
+    flex-direction: column;
+    font-size: 1em;
+    border-top: 1px solid var(--primary-color-2);
+    padding: 1em;
+
+    /* Inherit the font size from the parent (e.g., body) */
+}
+
+/* Title container styling */
+.cartouche-title h4 {
+    margin: 0;
+    color: var(--primary-color-1);
+    display: none;
+}
+
+
+/* URL container styling */
+.cartouche-url a {
+    text-decoration: none;
+    word-break: break-word;
+    /* Ensure long URLs wrap */
+}
+
+/* Content container styling */
+.cartouche-content {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow items to wrap into multiple rows */
+    column-gap: 2em;
+}
+
+.cartouche-content>div {
+    flex: 1 1 calc(50% - 1em);
+    /* Two columns with spacing */
+    box-sizing: border-box;
 }

@@ -17,9 +17,23 @@ const outputPdf = path.basename(inputMd, path.extname(inputMd)) + '.pdf';
 const headerFile = path.resolve(__dirname, 'assets/header.html');
 const footerFile = path.resolve(__dirname, 'assets/footer.html');
 const stylesheetFile = path.resolve(__dirname, 'assets/style.css');
+const jsFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
+
+// Check if the js preprocessor file exists
+if (fs.existsSync(jsFile)) {
+    console.log(`JavaScript preprocessor found: ${jsFile}`);
+    jsContent = fs.readFileSync(jsFile, 'utf8'); // Read the .js file content
+} else {
+    console.log(`No JavaScript preprocessor found for ${inputMd}`);
+}
 
 // Read the main Markdown file
-const markdownContent = fs.readFileSync(inputMd, 'utf8');
+let markdownContent = fs.readFileSync(inputMd, 'utf8');
+
+// Append the JavaScript content to the Markdown file if it exists
+if (jsContent) {
+    markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
+}
 
 // Read the header and footer templates
 const headerContent = fs.readFileSync(headerFile, 'utf8');

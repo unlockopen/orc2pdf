@@ -1180,25 +1180,3 @@ OpenAI ChatGPT 4.5 using "deep research".
 [ESO request]: https://github.com/orcwg/cra-hub/blob/main/standards.md
 [Horizontal standards]: https://github.com/orcwg/cra-hub/blob/main/standards.md#milestone-1---horizontal-standards-due-august-30-2026
 [Type B standards]: https://github.com/orcwg/cra-hub/blob/main/standards.md#milestone-3---horizontal-standards-due-october-30-2027
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    function replaceDetailsWithList() {
-        const detailsElements = document.querySelectorAll('details');
-
-        detailsElements.forEach(details => {
-            const ul = details.querySelector('ul');
-
-            if (ul) {
-                // Add cartouche class to the resource detail blocks
-                ul.classList.add('cartouche');
-                // Replace the details element with the ul element
-                details.parentNode.replaceChild(ul, details);
-            }
-        });
-    }
-
-    // Replace all details elements with their corresponding ul elements when the page loads
-    replaceDetailsWithList();
-});
-</script>
