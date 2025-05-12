@@ -4,14 +4,17 @@ const { mdToPdf } = require('md-to-pdf');
 
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
+const outputHtmlFlag = process.argv.includes('--html'); // Check if the --html flag is passed
+
 if (!inputMd) {
     console.error('Error: Please provide the input Markdown file as an argument.');
-    console.error('Usage: node generate-pdf.js <input-md-file>');
+    console.error('Usage: node generate-pdf.js <input-md-file> [--html]');
     process.exit(1);
 }
 
-// Determine the output PDF file name based on the input file
+// Determine the output file names
 const outputPdf = path.basename(inputMd, path.extname(inputMd)) + '.pdf';
+const outputHtml = path.basename(inputMd, path.extname(inputMd)) + '.html';
 
 // File paths (adjusted to be relative to the script's directory)
 const headerFile = path.resolve(__dirname, 'assets/header.html');
@@ -20,6 +23,7 @@ const stylesheetFile = path.resolve(__dirname, 'assets/style.css');
 const jsFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
 
 // Check if the js preprocessor file exists
+let jsContent = '';
 if (fs.existsSync(jsFile)) {
     console.log(`JavaScript preprocessor found: ${jsFile}`);
     jsContent = fs.readFileSync(jsFile, 'utf8'); // Read the .js file content
@@ -70,6 +74,27 @@ if (frontMatterRegex.test(markdownContent)) {
 } else {
     // If no front matter exists, add one with pdf_options
     finalContent = `---\n${pdfOptionsBlock}\n---\n\n${markdownContent}`;
+}
+
+// if the --html flag is passed, generate HTML output
+if (outputHtmlFlag) {
+    (async () => {
+        try {
+            const html = await mdToPdf(
+                { content: finalContent },
+                {
+                    dest: outputHtml, // Output the HTML file
+                    stylesheet: [stylesheetFile], // Add the stylesheet here
+                    as_html: true,
+                }
+            );
+            if (html) {
+                console.log(`HTML output generated: ${outputHtml}`);
+            }
+        } catch (error) {
+            console.error('Error generating HTML:', error.message);
+        }
+    })();
 }
 
 // Generate the PDF using the md-to-pdf programmatic API

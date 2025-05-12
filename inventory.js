@@ -23,17 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (key === 'Title') {
           element = document.createElement('div');
-          element.innerHTML = `<strong>${key}:</strong> ${value}`;
+          element.innerHTML = `<strong>${key}: </strong> ${value}`;
           cartouche.appendChild(element);
         } else if (key === 'URL') {
           // Create a new anchor element for the URL
           element = document.createElement('div');
-          element.innerHTML = `<strong>${key}:</strong> ${value}`;
+          element.classList.add('cartouche-url');
+          element.innerHTML = `<strong>${key}:&nbsp;</strong>${value}`;
           cartouche.appendChild(element);
         } else {
           // Create a div for other key-value pairs
           element = document.createElement('div');
-          element.innerHTML = `<strong>${key}:</strong> ${value}`;
+          element.innerHTML = `<strong>${key}: </strong> ${value}`;
           columnContainer.appendChild(element);
         }
       });
