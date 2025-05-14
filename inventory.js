@@ -78,6 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let metadata = document.createElement('div');
     metadata.classList.add('cartouche');
+    metadata.classList.add(cartouchePosition(itemData.Text));
+    if (itemData.URL.length > 60) {
+      metadata.classList.add('cartouche-wide');
+    }
 
     let metadataTitle = document.createElement('h5');
     metadataTitle.textContent = 'Metadata';
@@ -86,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (itemData.URL) {
       let url = document.createElement('p');
       url.classList.add('cartouche-url');
-      url.innerHTML = `<strong>URL:</strong>&nbsp;<a href="${itemData.URL}" target="_blank">${itemData.URL}</a>`;
+      url.innerHTML = `<strong>URL:&nbsp;</strong><a href="${itemData.URL}" target="_blank">${itemData.URL}</a>`;
       metadata.appendChild(url);
     }
 
@@ -110,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
       metadata.appendChild(item);
     }
 
-    // add the cartouche metadata at the top of the text content
     textContent.insertBefore(metadata, textContent.firstChild);
 
     // Add the items to the structured item
@@ -118,6 +121,16 @@ document.addEventListener('DOMContentLoaded', () => {
     structuredItem.appendChild(textContent);
 
     return structuredItem;
+  }
+
+  // Define the position of the cartouche based on the text content's length
+  function cartouchePosition(text) {
+    let textLength = text.length;
+    if (textLength < 800) {
+      return 'cartouche-top';
+    } else {
+      return 'cartouche-middle';
+    }
   }
 
   restructureInventoryItems();

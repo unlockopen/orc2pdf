@@ -1076,11 +1076,11 @@ This section contains references to legislation that is similar or related to th
     <summary>More info</summary>
 
   * **Title:** Vietnam’s Cyber Information Security Requirements for Internet of things
-  * **URL:**
-  * **Publisher:**
-  * **License:**
-  * **Type:**
-  * **Publication date:**
+  * **URL:** Missing
+  * **Publisher:** Missing
+  * **License:** Missing
+  * **Type:** Missing
+  * **Publication date:** Missing
 
   </details>
 
