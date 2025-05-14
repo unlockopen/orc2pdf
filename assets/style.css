@@ -159,7 +159,7 @@ li {
 
 /* Style the cartouche container */
 .cartouche {
-    width: 27%;
+    width: 30%;
     font-size: 0.75rem;
     background-color: var(--primary-color-2-background);
     border-radius: 0.5rem;
@@ -222,7 +222,5 @@ li {
 }
 
 blockquote {
-    border-top: 0.2rem solid var(--secondary-color-2);
     background-color: var(--secondary-color-2-background);
-    border-bottom: 0.5rem solid var(--secondary-color-2);
 }
