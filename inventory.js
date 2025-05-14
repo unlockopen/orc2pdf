@@ -1,57 +1,124 @@
 document.addEventListener('DOMContentLoaded', () => {
-  function replaceDetailsWithList() {
-    const detailsElements = document.querySelectorAll('details');
+  function restructureInventoryItems() {
+    // Select all the items in the inventory
+    const items = Array.from(document.querySelectorAll('li')).filter(item => item.querySelector('details'));
 
-    detailsElements.forEach(details => {
-      const ul = details.querySelector('ul');
-      let cartouche = document.createElement('div');
-      cartouche.classList.add('cartouche');
+    items.forEach(item => {
+      // Extract the data for the current item
+      const extractedItem = extractItemData(item);
 
-      // Create container for columns
-      let columnContainer = document.createElement('div');
-      columnContainer.classList.add('cartouche-columns');
+      // Create a new div element to hold the extracted item details
+      const structuredItem = createStructuredItem(extractedItem);
 
-      ul.querySelectorAll('li').forEach(li => {
-        let key = li.querySelector('strong').textContent.replace(':', '').trim(); // Extract the bold text as the key
-        let value = li.textContent.replace(key, '').replace(':', '').trim(); // Extract the remaining text as the value
-        let element;
-
-        // Skip if value is empty
-        if (value === '') {
-          return;
-        }
-
-        if (key === 'Title') {
-          element = document.createElement('div');
-          element.innerHTML = `<strong>${key}: </strong> ${value}`;
-          cartouche.appendChild(element);
-        } else if (key === 'URL') {
-          // Create a new anchor element for the URL
-          element = document.createElement('div');
-          element.classList.add('cartouche-url');
-          element.innerHTML = `<strong>${key}:&nbsp;</strong>${value}`;
-          cartouche.appendChild(element);
-        } else {
-          // Create a div for other key-value pairs
-          element = document.createElement('div');
-          element.innerHTML = `<strong>${key}: </strong> ${value}`;
-          columnContainer.appendChild(element);
-        }
-      });
-
-      // Append containers to the cartouche
-
-      if (columnContainer.children.length > 0) {
-        cartouche.appendChild(columnContainer);
-      }
-
-      if (cartouche.children.length > 0) {
-        // Replace the details element with the cartouche div element
-        details.parentNode.replaceChild(cartouche, details);
+      // Replace the original li item with the new structured item
+      if (item.parentNode) {
+        item.parentNode.replaceChild(structuredItem, item);
       }
     });
   }
 
-  // Replace all details elements with their corresponding ul elements when the page loads
-  replaceDetailsWithList();
+  function extractItemData(item) {
+    let extractedItem = { columns: {} };
+
+    // Parse the HTML content of the list item
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = item.innerHTML;
+
+    // Remove the starting anchor tag
+    let firstAnchor = tempDiv.querySelector('a');
+    if (firstAnchor) firstAnchor.remove();
+
+    // Remove the " - " from the first <p>
+    let firstParagraph = tempDiv.querySelector('p');
+    if (firstParagraph) {
+      firstParagraph.innerHTML = firstParagraph.innerHTML.replace(/^\s*-\s*/, '');
+    }
+
+    // Remove the <details> block to avoid duplication
+    let details = tempDiv.querySelector('details');
+    if (details) details.remove();
+
+    // Extract the cleaned HTML content as the Text block
+    extractedItem.Text = tempDiv.innerHTML.trim();
+
+    // Extract details from the unordered list inside the details element
+    details = item.querySelector('details'); // Re-select <details> from the original item
+    if (!details) return extractedItem;
+
+    let ul = details.querySelector('ul');
+    if (!ul) return extractedItem;
+
+    ul.querySelectorAll('li').forEach(li => {
+      let strong = li.querySelector('strong');
+      if (!strong) return;
+
+      let key = strong.textContent.replace(':', '').trim();
+      let value = li.textContent.replace(key, '').replace(':', '').trim();
+
+      if (key === 'URL' || key === 'Title') {
+        extractedItem[key] = value;
+      } else {
+        extractedItem['columns'][key] = value;
+      }
+    });
+
+    return extractedItem;
+  }
+
+  function createStructuredItem(itemData) {
+    let structuredItem = document.createElement('li');
+    structuredItem.classList.add('inventory-item');
+
+    let itemTitle = document.createElement('h4');
+    itemTitle.textContent = itemData.Title || 'Untitled';
+
+    let textContent = document.createElement('div');
+    textContent.innerHTML = itemData.Text;
+    textContent.classList.add('item-text');
+
+    let metadata = document.createElement('div');
+    metadata.classList.add('cartouche');
+
+    let metadataTitle = document.createElement('h5');
+    metadataTitle.textContent = 'Metadata';
+    metadata.appendChild(metadataTitle);
+
+    if (itemData.URL) {
+      let url = document.createElement('p');
+      url.classList.add('cartouche-url');
+      url.innerHTML = `<strong>URL:</strong>&nbsp;<a href="${itemData.URL}" target="_blank">${itemData.URL}</a>`;
+      metadata.appendChild(url);
+    }
+
+    // Div for displaying in columns
+    /*
+        let columnItems = document.createElement('div');
+        columnItems.classList.add('cartouche-columns');
+
+        for (let key in itemData.columns) {
+          let columnItem = document.createElement('p');
+          columnItem.innerHTML = `<strong>${key}: </strong> ${itemData.columns[key]}`;
+          columnItems.appendChild(columnItem);
+        }
+
+        metadata.appendChild(columnItems);
+    */
+    // Display items in rows
+    for (let key in itemData.columns) {
+      let item = document.createElement('p');
+      item.innerHTML = `<strong>${key}: </strong> ${itemData.columns[key]}`;
+      metadata.appendChild(item);
+    }
+
+    // add the cartouche metadata at the top of the text content
+    textContent.insertBefore(metadata, textContent.firstChild);
+
+    // Add the items to the structured item
+    structuredItem.appendChild(itemTitle);
+    structuredItem.appendChild(textContent);
+
+    return structuredItem;
+  }
+
+  restructureInventoryItems();
 });

@@ -52,11 +52,14 @@ h3 {
 }
 
 h4 {
-    font-size: 1.5rem;
+    color: var(--primary-color-1);
+    font-size: 1.25rem;
+    break-after: avoid;
 }
 
 h5 {
-    font-size: 1.25rem;
+    color: var(--primary-color-1);
+    font-size: 1rem;
 }
 
 h6 {
@@ -65,7 +68,7 @@ h6 {
 }
 
 p {
-    margin: 0.5rem 0 1.5rem;
+    margin: 1rem 0;
 }
 
 blockquote {
@@ -153,39 +156,55 @@ li {
     margin-left: 0;
 }
 
-/* Select the <li> element that contains a <ul> with the class 'cartouche' */
-li:has(> div.cartouche) {
-    list-style-type: disc;
-    margin-bottom: 3rem;
-    border-bottom: 0.5rem solid var(--primary-color-2);
-
-}
-
 /* Style the cartouche container */
 .cartouche {
+    width: 30%;
+    font-size: 0.75rem;
+    background-color: var(--primary-color-2-background);
+    border-radius: 0.5rem;
+    border: 0.1rem solid var(--primary-color-2);
+    padding: 0.5rem 1rem;
+    margin: 1rem 0rem 0rem 1rem;
+    float: right;
+    break-inside: avoid;
+}
+
+.cartouche h5 {
+    padding: 0;
+}
+
+.inventory-item {
     display: flex;
     flex-direction: column;
-    border-top: 0.2rem solid var(--primary-color-2);
-    padding: 1rem;
-    background-color: var(--primary-color-2-background);
 }
+
+.item-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
 
 .cartouche-url {
     overflow-wrap: break-word;
 }
 
-
 /* Content container styling */
 .cartouche-columns {
     display: flex;
     flex-wrap: wrap;
-    column-gap: 2rem;
 }
 
-.cartouche-columns>div {
-    flex: 1 1 calc(50% - 1rem);
+.cartouche-columns>p {
+    flex: 1 1 calc(50%);
     /* Two columns with spacing */
     box-sizing: border-box;
+}
+
+.cartouche-columns>p,
+.cartouche>p {
+    margin: 0;
+
 }
 
 blockquote {
