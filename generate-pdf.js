@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { mdToPdf } = require('md-to-pdf');
+const matter = require('gray-matter');
+const { PDFDocument } = require('pdf-lib');
 
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
@@ -19,8 +21,21 @@ const outputHtml = path.basename(inputMd, path.extname(inputMd)) + '.html';
 // File paths (adjusted to be relative to the script's directory)
 const headerFile = path.resolve(__dirname, 'assets/header.html');
 const footerFile = path.resolve(__dirname, 'assets/footer.html');
-const stylesheetFile = path.resolve(__dirname, 'assets/style.css');
+const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
+const titlePagestylesheetFile = path.resolve(__dirname, 'assets/title-page.css');
 const jsFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
+
+// Function to inject variables from front matter into the content
+function injectVariables(content, variables) {
+    return content.replace(/{{(\w+)}}/g, (match, variable) => {
+        return variables[variable] || match;
+    });
+}
+
+// Function to remove the page number from the footer for the title page
+function removePageNumberFromFooter(footerContent) {
+    return footerContent.replace('<p class="pageNumber"></p>', '<p>&nbsp;</p>');
+}
 
 // Check if the js preprocessor file exists
 let jsContent = '';
@@ -31,86 +46,156 @@ if (fs.existsSync(jsFile)) {
     console.log(`No JavaScript preprocessor found for ${inputMd}`);
 }
 
-// Read the main Markdown file
-let markdownContent = fs.readFileSync(inputMd, 'utf8');
-
-// Append the JavaScript content to the Markdown file if it exists
-if (jsContent) {
-    markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
-}
-
-// Read the header and footer templates
-const headerContent = fs.readFileSync(headerFile, 'utf8');
-const footerContent = fs.readFileSync(footerFile, 'utf8');
-
-// Define the pdf_options block
-const pdfOptionsBlock = `pdf_options:
-  format: a4
-  margin: 30mm 20mm
-  printBackground: true
-  headerTemplate: |
-    ${headerContent.replace(/\n/g, '\n    ')}
-  footerTemplate: |
-    ${footerContent.replace(/\n/g, '\n    ')}`;
-
-// Check if the Markdown file has a front matter block
-const frontMatterRegex = /^---\n([\s\S]*?)\n---/;
-let finalContent;
-
-if (frontMatterRegex.test(markdownContent)) {
-    // Extract the front matter
-    const frontMatterMatch = markdownContent.match(frontMatterRegex);
-    const frontMatter = frontMatterMatch[1];
-
-    // Check if pdf_options already exists
-    if (!frontMatter.includes('pdf_options:')) {
-        // Inject pdf_options into the front matter
-        const updatedFrontMatter = `${frontMatter}\n${pdfOptionsBlock}`;
-        finalContent = markdownContent.replace(frontMatterRegex, `---\n${updatedFrontMatter}\n---`);
-    } else {
-        // Keep the original content if pdf_options already exists
-        finalContent = markdownContent;
-    }
-} else {
-    // If no front matter exists, add one with pdf_options
-    finalContent = `---\n${pdfOptionsBlock}\n---\n\n${markdownContent}`;
-}
-
-// if the --html flag is passed, generate HTML output
-if (outputHtmlFlag) {
-    (async () => {
-        try {
-            const html = await mdToPdf(
-                { content: finalContent },
-                {
-                    dest: outputHtml, // Output the HTML file
-                    stylesheet: [stylesheetFile], // Add the stylesheet here
-                    as_html: true,
-                }
-            );
-            if (html) {
-                console.log(`HTML output generated: ${outputHtml}`);
-            }
-        } catch (error) {
-            console.error('Error generating HTML:', error.message);
-        }
-    })();
-}
-
-// Generate the PDF using the md-to-pdf programmatic API
+// Main function to handle the PDF generation process
 (async () => {
     try {
-        const pdf = await mdToPdf(
-            { content: finalContent },
+        // Read the main Markdown file
+        let markdownContent = fs.readFileSync(inputMd, 'utf8');
+
+        // Append the JavaScript content to the Markdown file if it exists
+        if (jsContent) {
+            markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
+        }
+        // Extract front matter
+        const { data: frontMatter, content } = matter(markdownContent);
+
+        // Read the header and footer templates
+        let headerContent = fs.readFileSync(headerFile, 'utf8');
+        let footerContent = fs.readFileSync(footerFile, 'utf8');
+
+        // Inject variables from front matter into the main document, header, and footer
+        markdownContent = injectVariables(content, frontMatter);
+        headerContent = injectVariables(headerContent, frontMatter);
+        footerContent = injectVariables(footerContent, frontMatter);
+
+        // Function to preprocess Markdown content using a JavaScript preprocessor
+        function preprocessMarkdown(markdownContent, frontMatter, jsFilePath) {
+            if (fs.existsSync(jsFilePath)) {
+                console.log(`JavaScript preprocessor found: ${jsFilePath}`);
+                const jsPreprocessor = require(jsFilePath); // Load the JavaScript preprocessor
+                if (typeof jsPreprocessor === 'function') {
+                    return jsPreprocessor(markdownContent, frontMatter); // Apply the preprocessor
+                } else {
+                    console.warn(`JavaScript preprocessor ${jsFilePath} does not export a function.`);
+                }
+            } else {
+                console.log(`No JavaScript preprocessor found for ${jsFilePath}`);
+            }
+            return markdownContent; // Return the original content if no preprocessor is found
+        }
+
+        // Check if the title page should include the header and footer
+        const includeHeaderFooterOnTitlePage = frontMatter.titleHeaderFooter || false;
+
+        // Create a title page if the title is provided in front matter
+        let titlePagePdfPath = null;
+        if (frontMatter.title) {
+            const titlePage = `
+<div id="title-page">
+    <h1>${frontMatter.title}</h1>
+    <h2>${frontMatter.subtitle || ''}</h2>
+</div>
+`;
+
+            // Define pdf_options for the title page
+            const titlePagePdfOptions = {
+                dest: 'title-page.pdf',
+                stylesheet: [titlePagestylesheetFile],
+                pdf_options: {
+                    printBackground: true,
+                    preferCSSPageSize: true,
+                    margin: 0,
+                },
+            };
+
+            // Include header and footer if specified in the front matter
+            if (includeHeaderFooterOnTitlePage) {
+                titlePagePdfOptions.pdf_options.headerTemplate = headerContent;
+                titlePagePdfOptions.pdf_options.footerTemplate = removePageNumberFromFooter(footerContent);
+            }
+
+            // Generate the title page PDF
+            titlePagePdfPath = 'title-page.pdf';
+            await mdToPdf({ content: titlePage }, titlePagePdfOptions);
+            console.log(`Title page PDF generated: ${titlePagePdfPath}`);
+        }
+
+        // Generate HTML file using md-to-pdf if --html flag is passed
+        if (outputHtmlFlag) {
+            (async () => {
+                try {
+                    const html = await mdToPdf(
+                        { content: markdownContent },
+                        {
+                            dest: outputHtml, // Output the HTML file
+                            stylesheet: [mainContentStylesheetFile], // Add the stylesheet here
+                            as_html: true,
+                        }
+                    );
+                    if (html) {
+                        console.log(`HTML output generated: ${outputHtml}`);
+                    }
+                } catch (error) {
+                    console.error('Error generating HTML:', error.message);
+                }
+            })();
+        }
+
+
+        // Generate the main content PDF
+        const mainContentPdfPath = 'main-content.pdf';
+
+        await mdToPdf(
+            { content: markdownContent },
             {
-                dest: outputPdf,
-                stylesheet: [stylesheetFile], // Add the stylesheet here
+                dest: mainContentPdfPath,
+                stylesheet: [mainContentStylesheetFile],
+                pdf_options: {
+                    displayHeaderFooter: true,
+                    headerTemplate: headerContent,
+                    footerTemplate: footerContent,
+                    printBackground: true,
+                    preferCSSPageSize: true,
+                },
             }
         );
-        if (pdf) {
-            console.log(`PDF generated: ${outputPdf}`);
+        console.log(`Main content PDF generated: ${mainContentPdfPath}`);
+
+        // Combine the title page PDF and the main content PDF
+        if (titlePagePdfPath) {
+            const titlePagePdfBytes = fs.readFileSync(titlePagePdfPath);
+            const mainContentPdfBytes = fs.readFileSync(mainContentPdfPath);
+
+            const titlePagePdfDoc = await PDFDocument.load(titlePagePdfBytes);
+            const mainContentPdfDoc = await PDFDocument.load(mainContentPdfBytes);
+
+            const combinedPdfDoc = await PDFDocument.create();
+
+            const titlePagePages = await combinedPdfDoc.copyPages(titlePagePdfDoc, [0]);
+            const mainContentPages = await combinedPdfDoc.copyPages(mainContentPdfDoc, mainContentPdfDoc.getPageIndices());
+
+            for (const page of titlePagePages) {
+                combinedPdfDoc.addPage(page);
+            }
+
+            for (const page of mainContentPages) {
+                combinedPdfDoc.addPage(page);
+            }
+
+            const combinedPdfBytes = await combinedPdfDoc.save();
+            fs.writeFileSync(outputPdf, combinedPdfBytes);
+            console.log(`Combined PDF generated: ${outputPdf}`);
+        } else {
+            // If no title page, just rename the main content PDF to the output PDF
+            fs.renameSync(mainContentPdfPath, outputPdf);
+            console.log(`PDF generated without title page: ${outputPdf}`);
         }
+
+        // Delete the intermediate files
+        if (titlePagePdfPath) fs.unlinkSync(titlePagePdfPath);
+        fs.unlinkSync(mainContentPdfPath);
+        console.log('Intermediate files deleted.');
     } catch (error) {
-        console.error('Error generating PDF:', error.message);
+        console.error('Error during PDF generation:', error.message);
     }
 })();

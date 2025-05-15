@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "md-to-pdf": "^5.2.4"
+    "gray-matter": "^4.0.3",
+    "md-to-pdf": "^5.2.4",
+    "pdf-lib": "^1.17.1"
   }
 }

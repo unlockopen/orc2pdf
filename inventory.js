@@ -76,62 +76,37 @@ document.addEventListener('DOMContentLoaded', () => {
     textContent.innerHTML = itemData.Text;
     textContent.classList.add('item-text');
 
-    let metadata = document.createElement('div');
-    metadata.classList.add('cartouche');
-    metadata.classList.add(cartouchePosition(itemData.Text));
-    if (itemData.URL.length > 60) {
-      metadata.classList.add('cartouche-wide');
-    }
-
-    let metadataTitle = document.createElement('h5');
-    metadataTitle.textContent = 'Metadata';
-    metadata.appendChild(metadataTitle);
+    let itemMetadata = document.createElement('div');
+    itemMetadata.classList.add('item-metadata');
 
     if (itemData.URL) {
       let url = document.createElement('p');
       url.classList.add('cartouche-url');
       url.innerHTML = `<strong>URL:&nbsp;</strong><a href="${itemData.URL}" target="_blank">${itemData.URL}</a>`;
-      metadata.appendChild(url);
+      itemMetadata.appendChild(url);
     }
 
-    // Div for displaying in columns
-    /*
-        let columnItems = document.createElement('div');
-        columnItems.classList.add('cartouche-columns');
-
-        for (let key in itemData.columns) {
-          let columnItem = document.createElement('p');
-          columnItem.innerHTML = `<strong>${key}: </strong> ${itemData.columns[key]}`;
-          columnItems.appendChild(columnItem);
-        }
-
-        metadata.appendChild(columnItems);
-    */
-    // Display items in rows
     for (let key in itemData.columns) {
       let item = document.createElement('p');
       item.innerHTML = `<strong>${key}: </strong> ${itemData.columns[key]}`;
-      metadata.appendChild(item);
+      itemMetadata.appendChild(item);
     }
 
-    textContent.insertBefore(metadata, textContent.firstChild);
+    let itemContent = document.createElement('div');
+    itemContent.classList.add('item-content');
+    itemContent.append(textContent);
+    itemContent.append(itemMetadata);
 
     // Add the items to the structured item
     structuredItem.appendChild(itemTitle);
-    structuredItem.appendChild(textContent);
+    structuredItem.appendChild(itemContent);
 
     return structuredItem;
   }
 
-  // Define the position of the cartouche based on the text content's length
-  function cartouchePosition(text) {
-    let textLength = text.length;
-    if (textLength < 800) {
-      return 'cartouche-top';
-    } else {
-      return 'cartouche-middle';
-    }
+  function restructureTitlePage() {
   }
 
   restructureInventoryItems();
+  //restructureTitlePage();
 });
