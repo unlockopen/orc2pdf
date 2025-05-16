@@ -174,7 +174,6 @@ if (fs.existsSync(jsFile)) {
 
             combinedPdfDoc.catalog.set(PDFName.of('PageLabels'), pageLabels);
 
-
             const combinedPdfBytes = await combinedPdfDoc.save();
             fs.writeFileSync(outputPdf, combinedPdfBytes);
             console.log(`Combined PDF generated: ${outputPdf}`);
