@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { mdToPdf } = require('md-to-pdf');
 const matter = require('gray-matter');
-const { PDFDocument } = require('pdf-lib');
+const { PDFDocument, PDFName, PDFHexString } = require('pdf-lib');
+
 
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
@@ -105,6 +106,7 @@ if (fs.existsSync(jsFile)) {
                     printBackground: true,
                     preferCSSPageSize: true,
                     margin: 0,
+                    scale: 1,
                 },
             };
 
@@ -156,6 +158,7 @@ if (fs.existsSync(jsFile)) {
                     footerTemplate: footerContent,
                     printBackground: true,
                     preferCSSPageSize: true,
+                    scale: 1,
                 },
             }
         );
@@ -181,6 +184,17 @@ if (fs.existsSync(jsFile)) {
             for (const page of mainContentPages) {
                 combinedPdfDoc.addPage(page);
             }
+
+            // Define the page labels for the combined PDF
+            const pageLabels = combinedPdfDoc.context.obj({
+                Nums: [
+                    0, { P: PDFHexString.fromText('Cover') }, // Custom label for the title page
+                    1, { S: 'D' },
+                ]
+            });
+
+            combinedPdfDoc.catalog.set(PDFName.of('PageLabels'), pageLabels);
+
 
             const combinedPdfBytes = await combinedPdfDoc.save();
             fs.writeFileSync(outputPdf, combinedPdfBytes);

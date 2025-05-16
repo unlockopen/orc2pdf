@@ -17,5 +17,5 @@ body {
 
 /* Setting page margins for printing */
 @page {
-    margin: 1cm 2cm;
+    margin: 0
 }

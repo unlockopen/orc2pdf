@@ -9,10 +9,6 @@
     --light-elements-color: #dfdfdf;
 }
 
-* {
-    border: 1px solid pink;
-}
-
 html {
     box-model: border-box;
     font-size: 24px;
