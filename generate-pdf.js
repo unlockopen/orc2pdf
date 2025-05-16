@@ -4,7 +4,6 @@ const { mdToPdf } = require('md-to-pdf');
 const matter = require('gray-matter');
 const { PDFDocument, PDFName, PDFHexString } = require('pdf-lib');
 
-
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
 const outputHtmlFlag = process.argv.includes('--html'); // Check if the --html flag is passed
@@ -57,6 +56,7 @@ if (fs.existsSync(jsFile)) {
         if (jsContent) {
             markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
         }
+
         // Extract front matter
         const { data: frontMatter, content } = matter(markdownContent);
 
@@ -69,33 +69,13 @@ if (fs.existsSync(jsFile)) {
         headerContent = injectVariables(headerContent, frontMatter);
         footerContent = injectVariables(footerContent, frontMatter);
 
-        // Function to preprocess Markdown content using a JavaScript preprocessor
-        function preprocessMarkdown(markdownContent, frontMatter, jsFilePath) {
-            if (fs.existsSync(jsFilePath)) {
-                console.log(`JavaScript preprocessor found: ${jsFilePath}`);
-                const jsPreprocessor = require(jsFilePath); // Load the JavaScript preprocessor
-                if (typeof jsPreprocessor === 'function') {
-                    return jsPreprocessor(markdownContent, frontMatter); // Apply the preprocessor
-                } else {
-                    console.warn(`JavaScript preprocessor ${jsFilePath} does not export a function.`);
-                }
-            } else {
-                console.log(`No JavaScript preprocessor found for ${jsFilePath}`);
-            }
-            return markdownContent; // Return the original content if no preprocessor is found
-        }
-
-        // Check if the title page should include the header and footer
-        const includeHeaderFooterOnTitlePage = frontMatter.titleHeaderFooter || false;
-
-        // Create a title page if the title is provided in front matter
+        // Generate the title page Markdown if the title is provided in front matter
         let titlePagePdfPath = null;
         if (frontMatter.title) {
-            const titlePage = `
-<div id="title-page">
-    <h1>${frontMatter.title}</h1>
-    <h2>${frontMatter.subtitle || ''}</h2>
-</div>
+            const titlePageMarkdown = `
+# ${frontMatter.title}
+
+## ${frontMatter.subtitle || ''}
 `;
 
             // Define pdf_options for the title page
@@ -111,14 +91,14 @@ if (fs.existsSync(jsFile)) {
             };
 
             // Include header and footer if specified in the front matter
-            if (includeHeaderFooterOnTitlePage) {
+            if (frontMatter.titleHeaderFooter) {
                 titlePagePdfOptions.pdf_options.headerTemplate = headerContent;
                 titlePagePdfOptions.pdf_options.footerTemplate = removePageNumberFromFooter(footerContent);
             }
 
             // Generate the title page PDF
             titlePagePdfPath = 'title-page.pdf';
-            await mdToPdf({ content: titlePage }, titlePagePdfOptions);
+            await mdToPdf({ content: titlePageMarkdown }, titlePagePdfOptions);
             console.log(`Title page PDF generated: ${titlePagePdfPath}`);
         }
 
@@ -142,7 +122,6 @@ if (fs.existsSync(jsFile)) {
                 }
             })();
         }
-
 
         // Generate the main content PDF
         const mainContentPdfPath = 'main-content.pdf';
