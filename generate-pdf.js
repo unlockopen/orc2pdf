@@ -34,7 +34,7 @@ function injectVariables(content, variables) {
 
 // Function to remove the page number from the footer for the title page
 function removePageNumberFromFooter(footerContent) {
-    return footerContent.replace('<p class="pageNumber"></p>', '<p>&nbsp;</p>');
+    return footerContent.replace('class="pageNumber"', '');
 }
 
 // Check if the js preprocessor file exists
