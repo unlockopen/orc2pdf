@@ -37,13 +37,6 @@ function removePageNumberFromFooter(footerContent) {
     return footerContent.replace('class="pageNumber"', '');
 }
 
-// Check if the js preprocessor file exists and load it as a module
-let jsPreprocessor = null;
-if (fs.existsSync(jsPreprocessorFile)) {
-    console.log(`JavaScript preprocessor found: ${jsPreprocessorFile}`);
-} else {
-    console.log(`No JavaScript preprocessor found for ${inputMd}`);
-}
 // Main function to handle the PDF generation process
 (async () => {
     try {
@@ -51,9 +44,11 @@ if (fs.existsSync(jsPreprocessorFile)) {
         let markdownContent = fs.readFileSync(inputMd, 'utf8');
 
         // Append the JavaScript content to the Markdown file if it exists
-        if (jsPreprocessor) {
+        if (fs.existsSync(jsPreprocessorFile)) {
             const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
             markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
+            console.log(`JavaScript preprocessor file found: ${jsPreprocessorFile}`);
+            console.log(`JavaScript content appended to Markdown file.`);
         }
 
         // Extract front matter
