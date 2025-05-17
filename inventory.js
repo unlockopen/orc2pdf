@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   function restructureInventoryItems() {
-    // Select all the items in the inventory
-    const items = Array.from(document.querySelectorAll('li')).filter(item => item.querySelector('details'));
+    // Select all the li elements containing a div with the class "metadata"
+    const items = Array.from(document.querySelectorAll('li')).filter(item => item.querySelector('.metadata'));
 
     items.forEach(item => {
       // Extract the data for the current item
@@ -11,9 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const structuredItem = createStructuredItem(extractedItem);
 
       // Replace the original li item with the new structured item
-      if (item.parentNode) {
-        item.parentNode.replaceChild(structuredItem, item);
-      }
+      item.innerHTML = structuredItem.innerHTML;
     });
   }
 
@@ -34,18 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
       firstParagraph.innerHTML = firstParagraph.innerHTML.replace(/^\s*-\s*/, '');
     }
 
-    // Remove the <details> block to avoid duplication
-    let details = tempDiv.querySelector('details');
-    if (details) details.remove();
-
     // Extract the cleaned HTML content as the Text block
     extractedItem.Text = tempDiv.innerHTML.trim();
 
     // Extract details from the unordered list inside the details element
-    details = item.querySelector('details'); // Re-select <details> from the original item
-    if (!details) return extractedItem;
+    metadataDiv = item.querySelector('metadata');
+    if (!metadataDiv) return extractedItem;
 
-    let ul = details.querySelector('ul');
+    let ul = metadataDiv.querySelector('ul');
     if (!ul) return extractedItem;
 
     ul.querySelectorAll('li').forEach(li => {
@@ -54,12 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let key = strong.textContent.replace(':', '').trim();
       let value = li.textContent.replace(key, '').replace(':', '').trim();
-
-      if (key === 'URL' || key === 'Title') {
-        extractedItem[key] = value;
-      } else {
-        extractedItem['columns'][key] = value;
-      }
+      extractedItem[key] = value;
     });
 
     return extractedItem;
@@ -101,12 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
     structuredItem.appendChild(itemTitle);
     structuredItem.appendChild(itemContent);
 
-    return structuredItem;
-  }
-
-  function restructureTitlePage() {
+    //      return structuredItem;
   }
 
   restructureInventoryItems();
-  //restructureTitlePage();
 });

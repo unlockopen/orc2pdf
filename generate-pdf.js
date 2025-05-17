@@ -23,7 +23,7 @@ const headerFile = path.resolve(__dirname, 'assets/header.html');
 const footerFile = path.resolve(__dirname, 'assets/footer.html');
 const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
 const titlePagestylesheetFile = path.resolve(__dirname, 'assets/title-page.css');
-const jsFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
+const jsPreprocessorFile = path.resolve(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
 
 // Function to inject variables from front matter into the content
 function injectVariables(content, variables) {
@@ -37,15 +37,13 @@ function removePageNumberFromFooter(footerContent) {
     return footerContent.replace('class="pageNumber"', '');
 }
 
-// Check if the js preprocessor file exists
-let jsContent = '';
-if (fs.existsSync(jsFile)) {
-    console.log(`JavaScript preprocessor found: ${jsFile}`);
-    jsContent = fs.readFileSync(jsFile, 'utf8'); // Read the .js file content
+// Check if the js preprocessor file exists and load it as a module
+let jsPreprocessor = null;
+if (fs.existsSync(jsPreprocessorFile)) {
+    console.log(`JavaScript preprocessor found: ${jsPreprocessorFile}`);
 } else {
     console.log(`No JavaScript preprocessor found for ${inputMd}`);
 }
-
 // Main function to handle the PDF generation process
 (async () => {
     try {
@@ -53,7 +51,8 @@ if (fs.existsSync(jsFile)) {
         let markdownContent = fs.readFileSync(inputMd, 'utf8');
 
         // Append the JavaScript content to the Markdown file if it exists
-        if (jsContent) {
+        if (jsPreprocessor) {
+            const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
             markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
         }
 
@@ -84,9 +83,7 @@ if (fs.existsSync(jsFile)) {
                 stylesheet: [titlePagestylesheetFile],
                 pdf_options: {
                     printBackground: true,
-                    preferCSSPageSize: true,
                     margin: 0,
-                    scale: 1,
                 },
             };
 
@@ -136,8 +133,6 @@ if (fs.existsSync(jsFile)) {
                     headerTemplate: headerContent,
                     footerTemplate: footerContent,
                     printBackground: true,
-                    preferCSSPageSize: true,
-                    scale: 1,
                 },
             }
         );

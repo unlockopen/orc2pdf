@@ -2,7 +2,6 @@
     --primary-color-1: #006472;
     --primary-color-2: #1cb1d1;
     --secondary-color-1: #003963;
-    --background-color: #ffffff;
     --text-color: #000000;
     --primary-gradient-horizontal: linear-gradient(to right, var(--primary-color-1), var(--primary-color-2));
     --primary-gradient-radial: radial-gradient(circle, var(--primary-color-1), var(--primary-color-2));
@@ -10,10 +9,8 @@
 }
 
 html {
-    box-model: border-box;
-    font-size: 24px;
+    font-size: 24px !important;
     font-family: Roboto, "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
 }
 
 body {
@@ -22,11 +19,16 @@ body {
 }
 
 h1 {
-    font-weight: 600;
+    font-size: 2rem !important;
+    font-weight: 500 !important;
     margin-top: 15cm;
 }
 
-h2 {}
+h2 {
+    font-size: 1.5rem !important;
+    font-weight: 200;
+    margin-top: 1rem !important;
+}
 
 /* Trigger a new page for all h2 elements */
 h2 {
