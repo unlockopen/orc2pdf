@@ -129,10 +129,22 @@ function removePageNumberFromFooter(footerContent) {
                     footerTemplate: footerContent,
                     printBackground: true,
                 },
+                beforePrint: async (page) => {
+                    // Wait for the DOMContentLoaded event to ensure the script is executed
+                    await page.evaluate(() => {
+                        return new Promise((resolve) => {
+                            if (document.readyState === 'complete') {
+                                resolve();
+                            } else {
+                                window.addEventListener('DOMContentLoaded', resolve);
+                            }
+                        });
+                    });
+                    console.log('JavaScript executed before generating the PDF.');
+                },
             }
         );
         console.log(`Main content PDF generated: ${mainContentPdfPath}`);
-
         // Combine the title page PDF and the main content PDF
         if (titlePagePdfPath) {
             const titlePagePdfBytes = fs.readFileSync(titlePagePdfPath);
