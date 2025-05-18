@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { mdToPdf } = require('md-to-pdf');
 const matter = require('gray-matter');
-const { PDFDocument, PDFName, PDFHexString } = require('pdf-lib');
+const { PDFDocument, PDFName, PDFHexString, scale } = require('pdf-lib');
 
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
@@ -23,7 +23,7 @@ const headerFile = path.resolve(__dirname, 'assets/header.html');
 const footerFile = path.resolve(__dirname, 'assets/footer.html');
 const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
 const titlePagestylesheetFile = path.resolve(__dirname, 'assets/title-page.css');
-const jsPreprocessorFile = path.resolve(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
+const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
 
 // Function to inject variables from front matter into the content
 function injectVariables(content, variables) {
@@ -78,15 +78,14 @@ function removePageNumberFromFooter(footerContent) {
                 stylesheet: [titlePagestylesheetFile],
                 pdf_options: {
                     printBackground: true,
-                    margin: 0,
+                    preferCSSPageSize: true,
+                    scale: 1.0,
                 },
             };
 
-            // Include header and footer if specified in the front matter
-            if (frontMatter.titleHeaderFooter) {
-                titlePagePdfOptions.pdf_options.headerTemplate = headerContent;
-                titlePagePdfOptions.pdf_options.footerTemplate = removePageNumberFromFooter(footerContent);
-            }
+            // Include header and footer
+            titlePagePdfOptions.pdf_options.headerTemplate = headerContent;
+            titlePagePdfOptions.pdf_options.footerTemplate = removePageNumberFromFooter(footerContent);
 
             // Generate the title page PDF
             titlePagePdfPath = 'title-page.pdf';
@@ -128,6 +127,8 @@ function removePageNumberFromFooter(footerContent) {
                     headerTemplate: headerContent,
                     footerTemplate: footerContent,
                     printBackground: true,
+                    preferCSSPageSize: true,
+                    scale: 1.0,
                 },
                 beforePrint: async (page) => {
                     // Wait for the DOMContentLoaded event to ensure the script is executed
@@ -145,6 +146,7 @@ function removePageNumberFromFooter(footerContent) {
             }
         );
         console.log(`Main content PDF generated: ${mainContentPdfPath}`);
+
         // Combine the title page PDF and the main content PDF
         if (titlePagePdfPath) {
             const titlePagePdfBytes = fs.readFileSync(titlePagePdfPath);
@@ -184,6 +186,36 @@ function removePageNumberFromFooter(footerContent) {
             fs.renameSync(mainContentPdfPath, outputPdf);
             console.log(`PDF generated without title page: ${outputPdf}`);
         }
+
+        // Use PDF-lib to crop the pdf to a perfect A4 size and save a cropped version
+        const pdfDoc = await PDFDocument.load(fs.readFileSync(outputPdf));
+        const pages = pdfDoc.getPages();
+        pages.forEach((page) => {
+            // Crop the page to 210mm x 297mm precisely
+            const { width, height } = page.getSize();
+            const a4Width = 210 * 2.83465; // Convert mm to points
+            const a4Height = 297 * 2.83465; // Convert mm to points
+
+            if (width > a4Width || height > a4Height) {
+                // Set the crop box to start at the top-left corner (0, 0)
+                const xOffset = 0; // Keep the left edge intact
+                const yOffset = (height - a4Height) / 2; // Keep the top edge intact
+                page.setCropBox(xOffset, yOffset, a4Width, a4Height);
+            } else {
+                console.log(`Page already fits A4 size: ${width}x${height}`);
+            }
+
+            // Set all boxes to A4 size
+            page.setMediaBox(0, 0, a4Width, a4Height);
+            page.setBleedBox(0, 0, a4Width, a4Height);
+            page.setTrimBox(0, 0, a4Width, a4Height);
+            page.setArtBox(0, 0, a4Width, a4Height);
+        });
+
+        // Save the cropped PDF over the original file
+        const pdfBytes = await pdfDoc.save();
+        fs.writeFileSync(outputPdf, pdfBytes);
+        console.log(`Cropped PDF saved over the original file: ${outputPdf}`);
 
         // Delete the intermediate files
         if (titlePagePdfPath) fs.unlinkSync(titlePagePdfPath);

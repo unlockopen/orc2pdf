@@ -1,10 +1,7 @@
 ---
-title: CRA Resource Inventory
-subtitle: References relevant to the development and integration of open source under the Cyber Resilience Act
+title: Inventory of resources relevant to development and usage of open source under the Cyber Resilience Act
+subtitle: CRA Resource Inventory
 version: Version 1 - May 12, 2025
-author: Open Regulatory Compliance Working Group
-license: CC BY-SA 4.0
-titleHeaderFooter: true
 ---
 # Inventory of resources relevant to development and usage of open source under the Cyber Resilience Act
 

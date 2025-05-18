@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = Array.from(document.querySelectorAll('li')).filter(item => item.querySelector('details'));
 
     items.forEach(item => {
+      if (!item.parentElement.classList.contains('inventory-list')) {
+        // Skip items that are not part of the inventory list
+        item.parentElement.classList.add('inventory-list');
+      }
       // Extract the data for the current item
       const extractedItem = extractItemData(item);
 
@@ -11,14 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const structuredItem = createStructuredItem(extractedItem);
 
       // Replace the original li item with the new structured item
-      if (item.parentNode) {
-        item.parentNode.replaceChild(structuredItem, item);
-      }
+      item.innerHTML = structuredItem.innerHTML;
+
     });
   }
 
   function extractItemData(item) {
-    let extractedItem = { columns: {} };
+    let extractedItem = { metadata: {} };
 
     // Parse the HTML content of the list item
     let tempDiv = document.createElement('div');
@@ -55,10 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let key = strong.textContent.replace(':', '').trim();
       let value = li.textContent.replace(key, '').replace(':', '').trim();
 
-      if (key === 'URL' || key === 'Title') {
+      if (key === 'Title') {
         extractedItem[key] = value;
       } else {
-        extractedItem['columns'][key] = value;
+        extractedItem['metadata'][key] = value;
       }
     });
 
@@ -66,8 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createStructuredItem(itemData) {
-    let structuredItem = document.createElement('li');
-    structuredItem.classList.add('inventory-item');
+    // Create a new div element to hold the structured item
+    let structuredItem = document.createElement('div');
 
     let itemTitle = document.createElement('h4');
     itemTitle.textContent = itemData.Title || 'Untitled';
@@ -79,17 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let itemMetadata = document.createElement('div');
     itemMetadata.classList.add('item-metadata');
 
-    if (itemData.URL) {
-      let url = document.createElement('p');
-      url.classList.add('cartouche-url');
-      url.innerHTML = `<strong>URL:&nbsp;</strong><a href="${itemData.URL}" target="_blank">${itemData.URL}</a>`;
-      itemMetadata.appendChild(url);
-    }
-
-    for (let key in itemData.columns) {
-      let item = document.createElement('p');
-      item.innerHTML = `<strong>${key}: </strong> ${itemData.columns[key]}`;
-      itemMetadata.appendChild(item);
+    for (let key in itemData.metadata) {
+      let metadataItem = createLabeledMetadata(key, itemData.metadata[key]);
+      itemMetadata.appendChild(metadataItem);
     }
 
     let itemContent = document.createElement('div');
@@ -101,12 +96,39 @@ document.addEventListener('DOMContentLoaded', () => {
     structuredItem.appendChild(itemTitle);
     structuredItem.appendChild(itemContent);
 
+    // replace the return value with a debug nessage
     return structuredItem;
   }
 
-  function restructureTitlePage() {
+  function createLabeledMetadata(key, value) {
+    // Create a new paragraph element for the metadata and add a label
+    let labeledMetadata = document.createElement('p');
+    let label = document.createElement('strong');
+    label.textContent = key + ': ';
+    labeledMetadata.appendChild(label);
+    if (key === 'URL') {
+      let link = document.createElement('a');
+      link.href = value;
+      link.textContent = value;
+      labeledMetadata.appendChild(link);
+    } else {
+      labeledMetadata.appendChild(document.createTextNode(value));
+    }
+    return labeledMetadata;
   }
 
+  function restructureTableOfContent() {
+    // Select the table of contents by finding the first <h2> element and its following <ul>
+    const tocHeader = document.querySelector('h2');
+    if (!tocHeader) return;
+    const tocList = tocHeader.nextElementSibling;
+    if (!tocList || tocList.tagName !== 'UL') return;
+    tocList.classList.add('table-of-content');
+  };
+
+  // Add 'table-of-content' class to the first <ul> after the first <h2>
+  restructureTableOfContent();
+
+
   restructureInventoryItems();
-  //restructureTitlePage();
 });

@@ -1,26 +1,28 @@
 /* importing the main content CSS file for the CRA inventory items */
 @import url("./assets/style.css");
 
-/* Setting page margins for printing */
 @page {
-    margin: 1cm 2cm;
-}
-
-/* Trigger a new page for all h2 elements */
-h2 {
-    page-break-before: always;
-}
-
-/* Prevent page break if an h1 exists immediately before the h2 */
-h1+h2 {
-    page-break-before: auto;
-    margin-top: 0;
+    size: calc(var(--page-width) + 2 * var(--page-bleed)) calc(var(--page-height) + 2 * var(--page-bleed)) !important;
+    margin: var(--page-margin-top) var(--page-margin-left) var(--page-margin-top) var(--page-margin-left) !important;
 }
 
 /* Styling the metadata container for CRA inventory items */
+.inventory-list {
+    color: black !important;
+    font-size: 0.75rem !important;
+}
+
+.inventory-list>li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-bottom: none !important;
+    position: relative;
+}
+
 .item-metadata {
-    font-size: 0.75rem;
-    border-left: 3px solid var(--light-elements-color);
     break-inside: avoid;
     padding-left: 1rem;
     margin: 1rem 0 1rem 0;
@@ -32,8 +34,13 @@ h1+h2 {
     padding: 0;
 }
 
+.inventory-list h4 {
+    color: black !important;
+    font-size: 1rem !important;
+}
+
 .inventory-item {
-    font-size: 0.75rem;
+    font-size: 0.75rem !important;
 }
 
 .item-content {
@@ -44,6 +51,55 @@ h1+h2 {
     word-break: break-all;
 }
 
-h1 {
-    margin-top: 14cm !important;
+/* Styling table of content */
+
+ul.table-of-content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    font-size: 1rem !important;
+
+}
+
+ul.table-of-content>li>a {
+    width: 100%;
+    display: block;
+    font-weight: var(--title-font-weight);
+    color: black;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+
+    /* Simulate border with background */
+    position: relative;
+    /* Required for the pseudo-element */
+}
+
+ul.table-of-content>li>a::after,
+.inventory-list>li::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    /* Thickness of the simulated border */
+    background: var(--primary-gradient-horizontal);
+    /* Apply the gradient */
+}
+
+ul.table-of-content li ul li a {
+    width: 100%;
+    display: block;
+    font-weight: 300;
+    color: black;
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    margin-bottom: 0.5rem !important;
+    border-bottom: none !important;
+
 }
