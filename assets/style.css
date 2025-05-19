@@ -203,7 +203,7 @@ ol li {
 blockquote {
     font-family: var(--legal-font);
     font-style: normal;
-    margin: 2rem 0 !important;
+    margin: 2rem 3rem !important;
     line-height: 1.2;
     font-size: 1rem;
 }
