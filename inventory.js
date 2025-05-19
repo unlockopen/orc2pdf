@@ -89,11 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let itemContent = document.createElement('div');
     itemContent.classList.add('item-content');
+    itemContent.appendChild(itemTitle);
     itemContent.append(textContent);
-    itemContent.append(itemMetadata);
+
 
     // Add the items to the structured item
-    structuredItem.appendChild(itemTitle);
+    structuredItem.appendChild(itemMetadata);
     structuredItem.appendChild(itemContent);
 
     // replace the return value with a debug nessage
@@ -118,17 +119,60 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function restructureTableOfContent() {
-    // Select the table of contents by finding the first <h2> element and its following <ul>
-    const tocHeader = document.querySelector('h2');
-    if (!tocHeader) return;
-    const tocList = tocHeader.nextElementSibling;
-    if (!tocList || tocList.tagName !== 'UL') return;
-    tocList.classList.add('table-of-content');
-  };
+    const tocHeader = Array.from(document.querySelectorAll('h2')).find(
+      (header) => header.textContent.trim().toLowerCase() === 'table of content'
+    );
+
+    if (tocHeader) {
+      const tocList = tocHeader.nextElementSibling;
+      if (tocList && tocList.tagName === 'UL') {
+        tocList.classList.add('table-of-content');
+      }
+    }
+  }
+
+  // Remove the first h3
+  const firstH3 = document.querySelector('h3');
+  if (firstH3) {
+    firstH3.remove();
+  }
+
+  // Split the first h1 into a title and a subtitle
+  const firstH1 = document.querySelector('h1');
+  if (firstH1) {
+    const title = firstH1.textContent.split(':')[0].trim();
+    const subtitle = firstH1.textContent.split(':')[1]?.trim() || '';
+    firstH1.textContent = title + ':';
+    const subtitleElement = document.createElement('h2');
+    subtitleElement.textContent = subtitle;
+    firstH1.parentElement.insertBefore(subtitleElement, firstH1.nextSibling);
+  }
+
+  // Tag callouts with 'callout' class
+  // Find bloqukquotes starting with [!NOTE]
+
+  function addCalloutClasses() {
+    const callouts = document.querySelectorAll('blockquote');
+    callouts.forEach((callout) => {
+      const firstParagraph = callout.querySelector('p'); // Find the first <p> inside the blockquote
+      if (firstParagraph) {
+        const text = firstParagraph.textContent.trim();
+
+        // Match the callout type based on the marker
+        const calloutType = text.match(/^\[!(NOTE|TIP|IMPORTANT|CAUTION|WARNING)\]/);
+        if (calloutType) {
+          const type = calloutType[1].toLowerCase(); // Extract the type and convert to lowercase
+          callout.classList.add('callout', type); // Add the callout and specific type class
+
+          // Remove the marker from the text
+          firstParagraph.textContent = text.replace(/^\[!(NOTE|TIP|IMPORTANT|CAUTION|WARNING)\]/, '').trim();
+        }
+      }
+    });
+  }
 
   // Add 'table-of-content' class to the first <ul> after the first <h2>
   restructureTableOfContent();
-
-
   restructureInventoryItems();
+  addCalloutClasses();
 });

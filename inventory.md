@@ -1,13 +1,18 @@
----
-title: Inventory of resources relevant to development and usage of open source under the Cyber Resilience Act
-subtitle: CRA Resource Inventory
-version: Version 1 - May 12, 2025
----
-# Inventory of resources relevant to development and usage of open source under the Cyber Resilience Act
+### Version 1 - May 12, 2025
 
-The goal of this document is to provide a comprehensive list of resources that are relevant to the CRA obligations of open source software stewards and manufacturers when it comes to the development and usage of open source. The underlying purpose is to provide specification and standardization effort with easy access to documented industry and community best practices related to the development and integration of open source software and to the interactions between developers and consumers of open source.
+# CRA Resource Inventory: references relevant to the development and integration of open source under the Cyber Resilience Act
+
+The goal of this document is to provide a comprehensive list of resources that are relevant to the obligations of open source software stewards and manufacturers when it comes to the development and integration of open source under the Cyber Resilience Act (CRA) and to the interactions between all of the different stakeholders. The underlying purpose is to provide specification and standardization efforts with easy access to documented industry and community best practices.
 
 _Note: the description of each resource has been generated using a large language model and verified for accuracy. See [Annex I - LLM Usage][LLM usage] below for the prompts and tools used._
+
+## Status of this document
+
+This document is a [deliverable](https://github.com/orcwg/orcwg/blob/main/cyber-resilience-sig/deliverables.md#12-inventory) of the [Cyber Resilience SIG](https://github.com/orcwg/orcwg/tree/main/cyber-resilience-sig#readme) of the [Open Regulatory Compliance Working Group (ORC)](https://orcwg.org/) of the [Eclipse Foundation](https://www.eclipse.org/). It was approved to be released as version 1.0 by the Cyber Resilience SIG on May 12, 2025. It represents the consensus of ORC and its [members](https://orcwg.org/membership/).
+
+This document is released under the [CC-BY 4.0 License](https://github.com/orcwg/orcwg/blob/main/LICENSE.md). It is not governed by the Eclipse Foundation Specification Process (EFSP).
+
+This document is developed in the open, [on GitHub](https://github.com/orcwg/cra-hub/blob/main/inventory.md). To contribute to future revisions of this document or submit errata, please send a pull request or [open an issue](https://github.com/orcwg/cra-hub/issues/new).
 
 ## Table of Content
 
@@ -700,18 +705,6 @@ This section contains references which are relevant to the requirements expresse
   * **Publication date:** 2021
   </details>
 
-* [OpenChain Telco SBOM Guide Version 1.1](https://github.com/OpenChain-Project/Telco-WG/blob/main/OpenChain-Telco-SBOM-Guide_EN.md) - The OpenChain Telco SBOM Guide is a telecommunications industry-focused framework for creating, delivering, and consuming Software Bill of Materials (SBOM) in a standardized manner. Developed by the OpenChain Project’s Telco Work Group with input from major network operators and vendors, it defines key SBOM content requirements and format recommendations (centered on the SPDX standard) to ensure consistency and quality across the supply chain. By establishing a common baseline for SBOM structure and information, the guide helps different parties in the telecom sector share software component lists and security data with greater repeatability and interoperability. This guidance is particularly relevant for organizations preparing to comply with the EU Cyber Resilience Act (CRA), which mandates that manufacturers of digital products provide an SBOM as part of their technical documentation. Adhering to the guide’s recommendations can assist companies in meeting the CRA’s SBOM requirements by aligning their software transparency practices with an open industry standard.
-  <details>
-    <summary>More info</summary>
-
-  * **Title:** OpenChain Telco SBOM Guide Version 1.1
-  * **URL:** <https://github.com/OpenChain-Project/Telco-WG/blob/main/OpenChain-Telco-SBOM-Guide_EN.md>
-  * **Publisher:** OpenChain Telco Work Group
-  * **License:** CC-BY 4.0
-  * **Type:** Specification
-  * **Publication date:** 2025
-  </details>
-
 * [Technical guidelines on SBOMs from CERT-In](https://www.cert-in.org.in/PDF/SBOM_Guidelines.pdf) - In October 2024, the Indian Computer Emergency Response Team (CERT-In) released a set of technical guidelines on Software Bill of Materials (SBOM) for organizations in the public sector and critical industries. This document underscores the value of SBOMs as a tool for transparency in software supply chains and provides recommendations for how to generate and maintain SBOMs. It outlines processes and best practices for implementing SBOMs – such as what component information should be included (name, version, supplier, known vulnerabilities, etc.) – and offers guidance on integrating SBOM use into procurement and risk management. The goal of these guidelines is to ensure that Indian government agencies and essential service providers adopt SBOM practices to enhance software security and resilience, in line with global trends and regulatory expectations.
   <details>
     <summary>More info</summary>
@@ -736,30 +729,18 @@ This section contains references which are relevant to the requirements expresse
   * **Publication date:** 2024
   </details>
 
-* [CISA SBOM Community - SBOM Reference Implementations](https://github.com/SBOM-Community/SBOM-Generation) - A white paper examinining the practical challenges of producing robust, National
-Telecommunications and Information Administration (NTIA) Minimum Elements-adherent,
-Software Bills of Materials (SBOM) that not only meet the NTIA Minimum Elements
-but can go beyond this to meet future compliance frameworks. As of publication,
-the authors' research found that no single open source tool can reliably generate
-an SBOM that adheres to NTIA Minimum Elements out of the box. The authors propose
-a six-step process that separates SBOM creation (or "authoring") into distinct,
-manageable phases (Generation, Augmentation, Enrichment, Verification, Signing).
-  <details>
-    <summary>More info</summary>
-
-  * **Title:** White Paper: Enhancing Software Bill of Materials (SBOM) Generation
-  * **URL:** <https://github.com/SBOM-Community/SBOM-Generation/blob/main/whitepaper/Draft-SBOM-Generation-White-Paper-Feb-25-2025.pdf>
-  * **Publisher:** CISA SBOM Community - Reference Implementations Tiger Team
-  * **License:** Apache-2.0
-  * **Type:** formal
-  * **Publication date:** Feb 2025
-  </details>
-
 ## 5. Due diligence requirements
 
 This section contains references which are relevant to the requirement to "exercise due diligence" expressed in [Article 13(5)][Article 13] of the CRA. It has no corresponding standard request in the [European Commission's standardisation request to the ESOs][ESO request].
 
-> 5. For the purpose of complying with paragraph 1, manufacturers shall exercise due diligence when integrating components sourced from third parties so that those components do not compromise the cybersecurity of the product with digital elements, including when integrating components of free and open-source software that have not been made available on the market in the course of a commercial activity.
+> For the purpose of complying with paragraph 1, manufacturers shall exercise due diligence when integrating components sourced from third parties so that those components do not compromise the cybersecurity of the product with digital elements, including when integrating components of free and open-source software that have not been made available on the market in the course of a commercial activity.
+
+> [!NOTE]
+> The due diligence obligation of manufacturers outlined in Article 13(5) of the CRA is the cornerstone of the relationship between manufacturers and the open source ecosystem. The CRA finally formalizes the long-held understanding that manufacturers are responsible for the security of the open source components that they integrate in their products. Yet the relationship between manufacturers and the open source projects they integrate remains underspecified. Most of the references we have collected assume the existence of a contractual relationship between a manufacturer and a supplier that addresses compliance obligations.
+>
+> This is of course different when integrating open source components, as no such agreement exists. Neither _open source software stewards_ nor the maintainers of open source projects are suppliers. Open source software is provided _as is_. Not only do manufacturers need to exercise due diligence when they decide to integrate open source projects in their products. They also need to support and contribute to these projects to ensure that they meet their own compliance requirements.
+>
+> ORC plans to examine this relationship in an upcoming [white paper on the due diligence obligations of manufacturers](https://github.com/orcwg/orcwg/blob/main/cyber-resilience-sig/deliverables.md#32-white-paper-on-due-diligence-obligation-of-manufacturers).
 
 * [CISA Software Acquisition Guide](https://cisa.gov/sag) - The U.S. CISA Software Acquisition Guide provides practical guidance to government agencies (and large enterprises) on how to incorporate security considerations into the procurement of software. It outlines how buyers should define security requirements in RFPs/contracts – such as requiring vendors to follow secure development standards (like the NIST SSDF), provide artifacts like SBOMs and vulnerability disclosure policies, and agree to notify and patch if vulnerabilities are found. It also advises on evaluating supplier risk (e.g. checking if the vendor has had frequent security issues historically or if they have certified processes like ISO 27001). The guide suggests structuring the vendor selection process to include security questionnaires or assessments and to prefer vendors who can demonstrate secure-by-design approaches (perhaps via certifications or past performance). Additionally, it covers how to handle acquired software: establishing processes for incoming SBOM analysis, periodic re-scans for vulnerabilities in the product, and ensuring maintenance contracts cover security updates. By following this guide, procurement officers and risk managers can make more informed decisions, selecting products that not only meet functionality needs but also contribute positively to the organization’s security posture, thereby using market forces to encourage vendors to deliver safer software.
   <details>
@@ -1065,9 +1046,8 @@ This section contains references to legislation that is similar or related to th
 
 ## Acknowledgments
 
-The following people have contributed to this document either directly or indirectly (e.g. by raising issues):
+The following people have contributed to this document either directly or indirectly (e.g. by raising questions):
 
-Andrew Katz,
 Anthony Harrison,
 Ayan Sinha Mahapatra,
 Christopher "CRob" Robinson,
@@ -1081,7 +1061,6 @@ Luis Villa,
 Maarten Aertsen,
 Marta Rybczynska,
 Maxim Baele,
-Melissa Birchler,
 Merlijn Sebrechts,
 Pierre Pronchery,
 Roberto Di Cosmo,

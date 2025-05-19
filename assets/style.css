@@ -5,23 +5,27 @@
     --text-color: #000000;
     --primary-gradient-horizontal: linear-gradient(to right, var(--primary-color-1), var(--primary-color-2));
     --primary-gradient-radial: radial-gradient(circle, var(--primary-color-1), var(--primary-color-2));
+    --white-to-primary-gradient-horizontal: linear-gradient(to right, white, var(--primary-color-2));
     --light-elements-color: #dfdfdf;
     --page-margin-top: 2cm;
     --page-margin-left: 2cm;
     --page-margin-right: 2cm;
     --page-margin-bottom: 1cm;
-    --h1-top-margin: 10cm;
+    --h1-top-margin: 12cm;
     --title-font-weight: 400;
     --page-height: 297mm;
     --page-width: 210mm;
     --page-bleed: 1mm;
+    --main-font: Roboto, "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --legal-font: Garamond, 'Times New Roman', Times, serif;
+
     box-sizing: border-box !important;
 }
 
 html {
     font-size: 15px !important;
-    line-height: 1.5 !important;
-    font-family: Roboto, "Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.6 !important;
+    font-family: var(--main-font) !important;
     height: 100%;
     width: 100%;
     padding: 0 !important;
@@ -40,7 +44,7 @@ h4,
 h5,
 h6 {
     padding: 0 !important;
-    margin-top: 0 !important;
+    margin: 0 !important;
     font-weight: var(--title-font-weight) !important;
     break-after: avoid !important;
     break-inside: avoid !important;
@@ -48,27 +52,39 @@ h6 {
     page-break-inside: avoid !important;
 }
 
+
 h1 {
-    font-size: 2.5rem !important;
-    margin-bottom: 5rem !important;
+    font-size: 3rem !important;
     margin-top: var(--h1-top-margin) !important;
 }
 
 h2 {
-    margin-top: 2rem !important;
+    margin-top: 0rem !important;
     font-size: 2rem !important;
     margin-bottom: 3rem !important;
     page-break-before: always;
+    font-weight: 200 !important;
 
 }
 
+h1+h2 {
+    margin-top: 0 !important;
+    page-break-before: avoid !important;
+}
+
 h3 {
+    margin-top: 2rem !important;
     font-size: 1.5rem;
     margin-bottom: 1rem !important;
 }
 
 h4 {
+    margin: 0 !important;
     font-size: 1.25rem;
+}
+
+h4+ul {
+    break-inside: avoid !important;
 }
 
 h5 {
@@ -174,3 +190,32 @@ li {
     list-style: none;
     margin-left: 0;
 }
+
+ol,
+ol li {
+    list-style: upper-roman !important;
+}
+
+/* Styles for the blockquotes from legal documents */
+
+blockquote {
+    font-family: var(--legal-font);
+    font-style: italic;
+    background-color: #fbfaf2;
+    color: #333;
+    margin: 1rem 0 !important;
+}
+
+/* Callout styles - all callouts get callout class and the corresponding class
+    note, tip, important, warning, caution  */
+
+blockquote.callout {
+    font-family: var(--main-font);
+    background-color: transparent !important;
+    font-style: normal !important;
+    color: black !important;
+    border: 2px solid var(--primary-color-2) !important;
+    border-radius: 1rem !important;
+}
+
+.callout.note {}

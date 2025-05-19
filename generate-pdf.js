@@ -24,6 +24,7 @@ const footerFile = path.resolve(__dirname, 'assets/footer.html');
 const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
 const titlePagestylesheetFile = path.resolve(__dirname, 'assets/title-page.css');
 const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
+let pageMetadata = {};
 
 // Function to inject variables from front matter into the content
 function injectVariables(content, variables) {
@@ -51,25 +52,38 @@ function removePageNumberFromFooter(footerContent) {
             console.log(`JavaScript content appended to Markdown file.`);
         }
 
-        // Extract front matter
-        const { data: frontMatter, content } = matter(markdownContent);
+        // Extract title, subtitle and version from the raw Markdown content
+        // Extract the first H1 header as the title
+        const Title = markdownContent.match(/^\s*#\s+(.+)/m);
+        if (Title && Title[1]) {
+            const [title, subtitle] = Title[1].split(':').map((str) => str.trim());
+            pageMetadata['title'] = title || '';
+            pageMetadata['subtitle'] = subtitle || '';
+        } else {
+            console.error('Error: No valid H1 header found in the Markdown content.');
+            pageMetadata['title'] = '';
+            pageMetadata['subtitle'] = '';
+        }
+
+        // Extract the first H3 header as the version
+        const versionMatch = markdownContent.match(/^\s*###\s*(.+)/m);
+        pageMetadata['version'] = versionMatch ? versionMatch[1].trim() : '';
 
         // Read the header and footer templates
         let headerContent = fs.readFileSync(headerFile, 'utf8');
         let footerContent = fs.readFileSync(footerFile, 'utf8');
 
-        // Inject variables from front matter into the main document, header, and footer
-        markdownContent = injectVariables(content, frontMatter);
-        headerContent = injectVariables(headerContent, frontMatter);
-        footerContent = injectVariables(footerContent, frontMatter);
+        // Inject variables into the header and footer
+        headerContent = injectVariables(headerContent, pageMetadata);
+        footerContent = injectVariables(footerContent, pageMetadata);
 
         // Generate the title page Markdown if the title is provided in front matter
         let titlePagePdfPath = null;
-        if (frontMatter.title) {
+        if (pageMetadata.title) {
             const titlePageMarkdown = `
-# ${frontMatter.title}
+# ${pageMetadata.title}:
 
-## ${frontMatter.subtitle || ''}
+## ${pageMetadata.subtitle || ''}
 `;
 
             // Define pdf_options for the title page
