@@ -22,6 +22,9 @@
     box-sizing: border-box !important;
 }
 
+
+* {}
+
 html {
     font-size: 15px !important;
     line-height: 1.6 !important;
@@ -35,6 +38,10 @@ body {
     color: #111;
     margin: 0 !important;
     padding: 0 !important;
+}
+
+.spacer {
+    break-after: page !important;
 }
 
 h1,
@@ -177,12 +184,7 @@ table tr:nth-child(2n) {
 a {
     color: var(--primary-color-1);
     text-decoration: none;
-    word-wrap: break-word;
-    /* For older browsers */
-    overflow-wrap: break-word;
-    /* Modern browsers */
-    word-break: break-all;
-    /* Break words if necessary */
+
 }
 
 ul,
@@ -200,10 +202,10 @@ ol li {
 
 blockquote {
     font-family: var(--legal-font);
-    font-style: italic;
-    background-color: #fbfaf2;
-    color: #333;
-    margin: 1rem 0 !important;
+    font-style: normal;
+    margin: 2rem 0 !important;
+    line-height: 1.2;
+    font-size: 1rem;
 }
 
 /* Callout styles - all callouts get callout class and the corresponding class
@@ -212,7 +214,6 @@ blockquote {
 blockquote.callout {
     font-family: var(--main-font);
     background-color: transparent !important;
-    font-style: normal !important;
     color: black !important;
     border: 2px solid var(--primary-color-2) !important;
     border-radius: 1rem !important;

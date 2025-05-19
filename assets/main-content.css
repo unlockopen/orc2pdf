@@ -18,25 +18,19 @@ ul.inventory-list {
     padding: 0 !important;
     margin-top: 1rem !important;
     margin-botton: 1rem !important;
-
 }
 
 .inventory-list>li {
     display: grid;
-    /* Use CSS Grid for the two-column layout */
-    grid-template-columns: 25% 75%;
-    /* Define the two columns */
-    gap: 1rem;
-    /* Add spacing between columns */
+    grid-template-columns: 24% 73%;
     padding: 0 !important;
     margin: 0 !important;
     margin-bottom: 1rem !important;
     border-bottom: none !important;
     break-inside: auto !important;
-    /* Allow breaking inside list items */
-    overflow: visible;
     /* Ensure content is not clipped */
     position: relative;
+    overflow: visible !important;
 }
 
 .inventory-list>li::after {
@@ -60,15 +54,22 @@ ul.inventory-list {
     color: black !important;
     font-weight: 600 !important;
     font-size: 1rem !important;
+    max-width: 100%;
+    /* Prevent overflow */
+    word-wrap: break-word;
+    /* Break long words */
+    overflow-wrap: break-word;
 }
 
-.inventory-item {}
-
 .item-content {
+    width: 100%;
     display: block;
     /* Ensure content is treated as a block */
     font-size: 0.8rem !important;
     padding-left: 1rem;
+    word-wrap: break-word !important;
+    /* Break long words */
+    overflow-wrap: break-word !important;
 }
 
 .item-metadata {
@@ -78,6 +79,15 @@ ul.inventory-list {
     font-size: 0.6rem !important;
     color: #000;
     padding-bottom: 1rem !important;
+}
+
+.item-metadata a {
+    word-wrap: break-word !important;
+    /* For older browsers */
+    overflow-wrap: break-word !important;
+    /* Modern browsers */
+    word-break: break-all !important;
+    /* Break words if necessary */
 }
 
 /* Styling table of content */
