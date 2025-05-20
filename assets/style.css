@@ -211,12 +211,11 @@ blockquote {
 /* Callout styles - all callouts get callout class and the corresponding class
     note, tip, important, warning, caution  */
 
-blockquote.callout {
+.callout {
     font-family: var(--main-font);
     background-color: transparent !important;
     color: black !important;
     border: 2px solid var(--primary-color-2) !important;
     border-radius: 1rem !important;
+    margin: 2rem 3rem !important;
 }
-
-.callout.note {}

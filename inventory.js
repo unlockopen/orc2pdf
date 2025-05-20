@@ -148,28 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     firstH1.parentElement.insertBefore(subtitleElement, firstH1.nextSibling);
   }
 
-  // Tag callouts with 'callout' class
-  // Find bloqukquotes starting with [!NOTE]
 
-  function addCalloutClasses() {
-    const callouts = document.querySelectorAll('blockquote');
-    callouts.forEach((callout) => {
-      const firstParagraph = callout.querySelector('p'); // Find the first <p> inside the blockquote
-      if (firstParagraph) {
-        const text = firstParagraph.textContent.trim();
-
-        // Match the callout type based on the marker
-        const calloutType = text.match(/^\[!(NOTE|TIP|IMPORTANT|CAUTION|WARNING)\]/);
-        if (calloutType) {
-          const type = calloutType[1].toLowerCase(); // Extract the type and convert to lowercase
-          callout.classList.add('callout', type); // Add the callout and specific type class
-
-          // Remove the marker from the text
-          firstParagraph.textContent = text.replace(/^\[!(NOTE|TIP|IMPORTANT|CAUTION|WARNING)\]/, '').trim();
-        }
-      }
-    });
-  }
 
   // Add 'table-of-content' class to the first <ul> after the first <h2>
   restructureTableOfContent();
