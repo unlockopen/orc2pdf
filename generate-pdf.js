@@ -3,6 +3,7 @@ const path = require('path');
 const { mdToPdf } = require('md-to-pdf');
 const matter = require('gray-matter');
 const { PDFDocument, PDFName, PDFHexString, scale } = require('pdf-lib');
+const { prependTitlePage, setPageLabels, cropPdfToA4 } = require('./lib/pdf-manipulation');
 
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
@@ -161,75 +162,23 @@ function removePageNumberFromFooter(footerContent) {
         );
         console.log(`Main content PDF generated: ${mainContentPdfPath}`);
 
-        // Combine the title page PDF and the main content PDF
         if (titlePagePdfPath) {
-            const titlePagePdfBytes = fs.readFileSync(titlePagePdfPath);
-            const mainContentPdfBytes = fs.readFileSync(mainContentPdfPath);
+            await prependTitlePage(mainContentPdfPath, titlePagePdfPath, outputPdf);
+            // Set page labels: first page "Cover", rest "1", "2", ...
+            const mainPdfBytes = fs.readFileSync(mainContentPdfPath);
+            const mainPdfDoc = await PDFDocument.load(mainPdfBytes);
+            const numPages = mainPdfDoc.getPageCount();
+            const labels = ['Title', ...Array.from({ length: numPages }, (_, i) => `${i + 1}`)];
+            await setPageLabels(outputPdf, labels);
 
-            const titlePagePdfDoc = await PDFDocument.load(titlePagePdfBytes);
-            const mainContentPdfDoc = await PDFDocument.load(mainContentPdfBytes);
-
-            const combinedPdfDoc = await PDFDocument.create();
-
-            const titlePagePages = await combinedPdfDoc.copyPages(titlePagePdfDoc, [0]);
-            const mainContentPages = await combinedPdfDoc.copyPages(mainContentPdfDoc, mainContentPdfDoc.getPageIndices());
-
-            for (const page of titlePagePages) {
-                combinedPdfDoc.addPage(page);
-            }
-
-            for (const page of mainContentPages) {
-                combinedPdfDoc.addPage(page);
-            }
-
-            // Define the page labels for the combined PDF
-            const pageLabels = combinedPdfDoc.context.obj({
-                Nums: [
-                    0, { P: PDFHexString.fromText('Cover') }, // Custom label for the title page
-                    1, { S: 'D' },
-                ]
-            });
-
-            combinedPdfDoc.catalog.set(PDFName.of('PageLabels'), pageLabels);
-
-            const combinedPdfBytes = await combinedPdfDoc.save();
-            fs.writeFileSync(outputPdf, combinedPdfBytes);
             console.log(`Combined PDF generated: ${outputPdf}`);
         } else {
-            // If no title page, just rename the main content PDF to the output PDF
             fs.renameSync(mainContentPdfPath, outputPdf);
             console.log(`PDF generated without title page: ${outputPdf}`);
         }
 
-        // Use PDF-lib to crop the pdf to a perfect A4 size and save a cropped version
-        const pdfDoc = await PDFDocument.load(fs.readFileSync(outputPdf));
-        const pages = pdfDoc.getPages();
-        pages.forEach((page) => {
-            // Crop the page to 210mm x 297mm precisely
-            const { width, height } = page.getSize();
-            const a4Width = 210 * 2.83465; // Convert mm to points
-            const a4Height = 297 * 2.83465; // Convert mm to points
-
-            if (width > a4Width || height > a4Height) {
-                // Set the crop box to start at the top-left corner (0, 0)
-                const xOffset = 0; // Keep the left edge intact
-                const yOffset = (height - a4Height) / 2; // Keep the top edge intact
-                page.setCropBox(xOffset, yOffset, a4Width, a4Height);
-            } else {
-                console.log(`Page already fits A4 size: ${width}x${height}`);
-            }
-
-            // Set all boxes to A4 size
-            page.setMediaBox(0, 0, a4Width, a4Height);
-            page.setBleedBox(0, 0, a4Width, a4Height);
-            page.setTrimBox(0, 0, a4Width, a4Height);
-            page.setArtBox(0, 0, a4Width, a4Height);
-        });
-
-        // Save the cropped PDF over the original file
-        const pdfBytes = await pdfDoc.save();
-        fs.writeFileSync(outputPdf, pdfBytes);
-        console.log(`Cropped PDF saved over the original file: ${outputPdf}`);
+        // Crop the PDF to A4 size
+        await cropPdfToA4(outputPdf);
 
         // Delete the intermediate files
         if (titlePagePdfPath) fs.unlinkSync(titlePagePdfPath);
