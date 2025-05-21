@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const { mdToPdf } = require('md-to-pdf');
-const matter = require('gray-matter');
-const { PDFDocument, PDFName, PDFHexString, scale } = require('pdf-lib');
+const { PDFDocument } = require('pdf-lib');
 const { prependTitlePage, setPageLabels, cropPdfToA4 } = require('./lib/pdf-manipulation');
 
 // Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
 const outputHtmlFlag = process.argv.includes('--html'); // Check if the --html flag is passed
+const titlePageFlag = !process.argv.includes('--no-title-page'); // Set to true by default
 
 if (!inputMd) {
     console.error('Error: Please provide the input Markdown file as an argument.');
@@ -27,16 +27,11 @@ const titlePagestylesheetFile = path.resolve(__dirname, 'assets/title-page.css')
 const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
 let pageMetadata = {};
 
-// Function to inject variables from front matter into the content
+// Function to inject variables into the content
 function injectVariables(content, variables) {
     return content.replace(/{{(\w+)}}/g, (match, variable) => {
         return variables[variable] || match;
     });
-}
-
-// Function to remove the page number from the footer for the title page
-function removePageNumberFromFooter(footerContent) {
-    return footerContent.replace('class="pageNumber"', '');
 }
 
 // Main function to handle the PDF generation process
@@ -78,55 +73,27 @@ function removePageNumberFromFooter(footerContent) {
         headerContent = injectVariables(headerContent, pageMetadata);
         footerContent = injectVariables(footerContent, pageMetadata);
 
-        // Generate the title page Markdown if the title is provided in front matter
-        let titlePagePdfPath = null;
-        if (pageMetadata.title) {
-            const titlePageMarkdown = `
-# ${pageMetadata.title}:
-
-## ${pageMetadata.subtitle || ''}
-`;
-
-            // Define pdf_options for the title page
-            const titlePagePdfOptions = {
-                dest: 'title-page.pdf',
-                stylesheet: [titlePagestylesheetFile],
-                pdf_options: {
-                    printBackground: true,
-                    preferCSSPageSize: true,
-                    scale: 1.0,
-                },
-            };
-
-            // Include header and footer
-            titlePagePdfOptions.pdf_options.headerTemplate = headerContent;
-            titlePagePdfOptions.pdf_options.footerTemplate = removePageNumberFromFooter(footerContent);
-
-            // Generate the title page PDF
-            titlePagePdfPath = 'title-page.pdf';
-            await mdToPdf({ content: titlePageMarkdown }, titlePagePdfOptions);
-            console.log(`Title page PDF generated: ${titlePagePdfPath}`);
+        // Generate the title page PDF unless the option --no-title-page is passed
+        if (titlePageFlag) {
+            const generateTitlePagePdf = require('./lib/title-page-generator');
+            let titlePagePdfPath = null;
+            if (pageMetadata.title) {
+                titlePagePdfPath = 'title-page.pdf';
+                await generateTitlePagePdf({
+                    title: pageMetadata.title,
+                    subtitle: pageMetadata.subtitle,
+                    headerContent,
+                    footerContent,
+                    stylesheetFile: titlePagestylesheetFile,
+                    outputPath: titlePagePdfPath,
+                });
+            }
         }
 
         // Generate HTML file using md-to-pdf if --html flag is passed
         if (outputHtmlFlag) {
-            (async () => {
-                try {
-                    const html = await mdToPdf(
-                        { content: markdownContent },
-                        {
-                            dest: outputHtml, // Output the HTML file
-                            stylesheet: [mainContentStylesheetFile], // Add the stylesheet here
-                            as_html: true,
-                        }
-                    );
-                    if (html) {
-                        console.log(`HTML output generated: ${outputHtml}`);
-                    }
-                } catch (error) {
-                    console.error('Error generating HTML:', error.message);
-                }
-            })();
+            const generateHtml = require('./lib/html-generator');
+            await generateHtml(inputMd, mainContentStylesheetFile, outputHtml);
         }
 
         // Generate the main content PDF
@@ -162,7 +129,7 @@ function removePageNumberFromFooter(footerContent) {
         );
         console.log(`Main content PDF generated: ${mainContentPdfPath}`);
 
-        if (titlePagePdfPath) {
+        if (titlePageFlag) {
             await prependTitlePage(mainContentPdfPath, titlePagePdfPath, outputPdf);
             // Set page labels: first page "Cover", rest "1", "2", ...
             const mainPdfBytes = fs.readFileSync(mainContentPdfPath);
@@ -181,8 +148,8 @@ function removePageNumberFromFooter(footerContent) {
         await cropPdfToA4(outputPdf);
 
         // Delete the intermediate files
-        if (titlePagePdfPath) fs.unlinkSync(titlePagePdfPath);
-        fs.unlinkSync(mainContentPdfPath);
+        if (titlePageFlag) fs.unlinkSync(titlePagePdfPath);
+        //fs.unlinkSync(mainContentPdfPath);
         console.log('Intermediate files deleted.');
     } catch (error) {
         console.error('Error during PDF generation:', error.message);
