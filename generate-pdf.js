@@ -2,155 +2,91 @@ const fs = require('fs');
 const path = require('path');
 const { mdToPdf } = require('md-to-pdf');
 const { PDFDocument } = require('pdf-lib');
-const { prependTitlePage, setPageLabels, cropPdfToA4 } = require('./lib/pdf-manipulation');
+const generateTitlePagePdf = require('./lib/title-page-generator');
+const { prependTitlePage, resetPageLabels, cropPdfToA4 } = require('./lib/pdf-manipulation');
+const { extractMetadata, injectVariables } = require('./lib/metadata');
 
-// Get the input Markdown file from command-line arguments
 const inputMd = process.argv[2];
-const outputHtmlFlag = process.argv.includes('--html'); // Check if the --html flag is passed
-const titlePageFlag = !process.argv.includes('--no-title-page'); // Set to true by default
+const outputHtmlFlag = process.argv.includes('--html'); // Default to false if not specified
+const titlePageFlag = !process.argv.includes('--no-title-page'); // Default to true if not specified
 
 if (!inputMd) {
     console.error('Error: Please provide the input Markdown file as an argument.');
-    console.error('Usage: node generate-pdf.js <input-md-file> [--html]');
     process.exit(1);
 }
 
-// Determine the output file names
 const outputPdf = path.basename(inputMd, path.extname(inputMd)) + '.pdf';
 const outputHtml = path.basename(inputMd, path.extname(inputMd)) + '.html';
 
-// File paths (adjusted to be relative to the script's directory)
 const headerFile = path.resolve(__dirname, 'assets/header.html');
 const footerFile = path.resolve(__dirname, 'assets/footer.html');
 const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
-const titlePagestylesheetFile = path.resolve(__dirname, 'assets/title-page.css');
 const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
-let pageMetadata = {};
 
-// Function to inject variables into the content
-function injectVariables(content, variables) {
-    return content.replace(/{{(\w+)}}/g, (match, variable) => {
-        return variables[variable] || match;
-    });
-}
+let markdownContent = fs.readFileSync(inputMd, 'utf8');
+let headerContent = fs.readFileSync(headerFile, 'utf8');
+let footerContent = fs.readFileSync(footerFile, 'utf8');
 
-// Main function to handle the PDF generation process
+const pageMetadata = extractMetadata(markdownContent);
+
+// Define base PDF options
+const pdfOptions = {
+    displayHeaderFooter: true,
+    headerTemplate: injectVariables(headerContent, pageMetadata),
+    footerTemplate: injectVariables(footerContent, pageMetadata),
+    printBackground: true,
+    preferCSSPageSize: true,
+    scale: 1.0,
+};
+
+
 (async () => {
     try {
-        // Read the main Markdown file
-        let markdownContent = fs.readFileSync(inputMd, 'utf8');
-
-        // Append the JavaScript content to the Markdown file if it exists
         if (fs.existsSync(jsPreprocessorFile)) {
             const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
             markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
-            console.log(`JavaScript preprocessor file found: ${jsPreprocessorFile}`);
-            console.log(`JavaScript content appended to Markdown file.`);
         }
 
-        // Extract title, subtitle and version from the raw Markdown content
-        // Extract the first H1 header as the title
-        const Title = markdownContent.match(/^\s*#\s+(.+)/m);
-        if (Title && Title[1]) {
-            const [title, subtitle] = Title[1].split(':').map((str) => str.trim());
-            pageMetadata['title'] = title || '';
-            pageMetadata['subtitle'] = subtitle || '';
-        } else {
-            console.error('Error: No valid H1 header found in the Markdown content.');
-            pageMetadata['title'] = '';
-            pageMetadata['subtitle'] = '';
-        }
-
-        // Extract the first H3 header as the version
-        const versionMatch = markdownContent.match(/^\s*###\s*(.+)/m);
-        pageMetadata['version'] = versionMatch ? versionMatch[1].trim() : '';
-
-        // Read the header and footer templates
-        let headerContent = fs.readFileSync(headerFile, 'utf8');
-        let footerContent = fs.readFileSync(footerFile, 'utf8');
-
-        // Inject variables into the header and footer
-        headerContent = injectVariables(headerContent, pageMetadata);
-        footerContent = injectVariables(footerContent, pageMetadata);
-
-        // Generate the title page PDF unless the option --no-title-page is passed
-        if (titlePageFlag) {
-            const generateTitlePagePdf = require('./lib/title-page-generator');
-            let titlePagePdfPath = null;
-            if (pageMetadata.title) {
-                titlePagePdfPath = 'title-page.pdf';
-                await generateTitlePagePdf({
-                    title: pageMetadata.title,
-                    subtitle: pageMetadata.subtitle,
-                    headerContent,
-                    footerContent,
-                    stylesheetFile: titlePagestylesheetFile,
-                    outputPath: titlePagePdfPath,
-                });
-            }
-        }
-
-        // Generate HTML file using md-to-pdf if --html flag is passed
+        // Generate HTML if requested
         if (outputHtmlFlag) {
             const generateHtml = require('./lib/html-generator');
             await generateHtml(inputMd, mainContentStylesheetFile, outputHtml);
         }
 
-        // Generate the main content PDF
-        const mainContentPdfPath = 'main-content.pdf';
-
-        await mdToPdf(
+        // Generate main content PDF in memory
+        const mainContentPdf = await mdToPdf(
             { content: markdownContent },
             {
-                dest: mainContentPdfPath,
                 stylesheet: [mainContentStylesheetFile],
-                pdf_options: {
-                    displayHeaderFooter: true,
-                    headerTemplate: headerContent,
-                    footerTemplate: footerContent,
-                    printBackground: true,
-                    preferCSSPageSize: true,
-                    scale: 1.0,
-                },
+                pdf_options: pdfOptions,
                 beforePrint: async (page) => {
-                    // Wait for the DOMContentLoaded event to ensure the script is executed
-                    await page.evaluate(() => {
-                        return new Promise((resolve) => {
-                            if (document.readyState === 'complete') {
-                                resolve();
-                            } else {
-                                window.addEventListener('DOMContentLoaded', resolve);
-                            }
-                        });
-                    });
-                    console.log('JavaScript executed before generating the PDF.');
+                    await page.evaluate(() => new Promise((resolve) => {
+                        if (document.readyState === 'complete') resolve();
+                        else window.addEventListener('DOMContentLoaded', resolve);
+                    }));
                 },
             }
         );
-        console.log(`Main content PDF generated: ${mainContentPdfPath}`);
 
-        if (titlePageFlag) {
-            await prependTitlePage(mainContentPdfPath, titlePagePdfPath, outputPdf);
-            // Set page labels: first page "Cover", rest "1", "2", ...
-            const mainPdfBytes = fs.readFileSync(mainContentPdfPath);
-            const mainPdfDoc = await PDFDocument.load(mainPdfBytes);
-            const numPages = mainPdfDoc.getPageCount();
-            const labels = ['Title', ...Array.from({ length: numPages }, (_, i) => `${i + 1}`)];
-            await setPageLabels(outputPdf, labels);
+        let mainPdfDoc = await PDFDocument.load(mainContentPdf.content);
 
-            console.log(`Combined PDF generated: ${outputPdf}`);
-        } else {
-            fs.renameSync(mainContentPdfPath, outputPdf);
-            console.log(`PDF generated without title page: ${outputPdf}`);
+        // Generate and prepend title page, then reset page numbers if needed
+        if (titlePageFlag && pageMetadata.title) {
+            const titlePagePdfBuffer = await generateTitlePagePdf(pageMetadata, pdfOptions);
+            const titlePdfDoc = await PDFDocument.load(titlePagePdfBuffer);
+            mainPdfDoc = await prependTitlePage(mainPdfDoc, titlePdfDoc);
+
+            // Reset page labels
+            mainPdfDoc = await resetPageLabels(mainPdfDoc);
         }
 
-        // Crop the PDF to A4 size
-        await cropPdfToA4(outputPdf);
+        // Crop all pages to A4 in memory
+        mainPdfDoc = await cropPdfToA4(mainPdfDoc);
 
-        // Delete the intermediate files
-        if (titlePageFlag) fs.unlinkSync(titlePagePdfPath);
-        //fs.unlinkSync(mainContentPdfPath);
-        console.log('Intermediate files deleted.');
+        // Save final PDF to disk
+        const finalPdfBytes = await mainPdfDoc.save();
+        fs.writeFileSync(outputPdf, finalPdfBytes);
+        console.log(`PDF generated: ${outputPdf}`);
     } catch (error) {
         console.error('Error during PDF generation:', error.message);
     }
