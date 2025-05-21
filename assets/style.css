@@ -1,6 +1,7 @@
 :root {
     --primary-color-1: #006472;
     --primary-color-2: #1cb1d1;
+    --primary-color-2-ultralight: #f6feff;
     --secondary-color-1: #003963;
     --text-color: #000000;
     --primary-gradient-horizontal: linear-gradient(to right, var(--primary-color-1), var(--primary-color-2));
@@ -20,6 +21,8 @@
     --legal-font: Garamond, 'Times New Roman', Times, serif;
 
     box-sizing: border-box !important;
+    /* Allow box-shadow for the callouts */
+
 }
 
 
@@ -203,7 +206,7 @@ ol li {
 blockquote {
     font-family: var(--legal-font);
     font-style: normal;
-    margin: 2rem 3rem !important;
+    margin: 2rem 4rem !important;
     line-height: 1.2;
     font-size: 1rem;
 }
@@ -212,10 +215,89 @@ blockquote {
     note, tip, important, warning, caution  */
 
 .callout {
-    font-family: var(--main-font);
-    background-color: transparent !important;
-    color: black !important;
-    border: 2px solid var(--primary-color-2) !important;
-    border-radius: 1rem !important;
-    margin: 2rem 3rem !important;
+    overflow: visible !important;
+    filter: drop-shadow(0 2px 8px rgba(27, 31, 35, 0.3));
+    border-left: 6px solid var(--primary-color-2) !important;
+    border-radius: 6px !important;
+    padding: 1rem 1.5rem !important;
+    margin: 2rem 2rem !important;
+    font-size: 1rem;
+}
+
+.callout-note {
+    background-color: var(--primary-color-2-ultralight) !important;
+}
+
+.callout-note::before {
+    content: "💡 Note";
+    font-weight: bold;
+    color: var(--primary-color-2);
+    margin-right: 0.5em;
+    display: block;
+    margin-bottom: 0.5em;
+    font-size: 1.05em;
+}
+
+/* TIP */
+.callout-tip {
+    background-color: #e6ffed !important;
+    border-left-color: #2da44e !important;
+}
+
+.callout-tip::before {
+    content: "🌱 Tip";
+    font-weight: bold;
+    color: #2da44e;
+    margin-right: 0.5em;
+    display: block;
+    margin-bottom: 0.5em;
+    font-size: 1.05em;
+}
+
+/* IMPORTANT */
+.callout-important {
+    background-color: #fff8c5 !important;
+    border-left-color: #d4a72c !important;
+}
+
+.callout-important::before {
+    content: "❗ Important";
+    font-weight: bold;
+    color: #d4a72c;
+    margin-right: 0.5em;
+    display: block;
+    margin-bottom: 0.5em;
+    font-size: 1.05em;
+}
+
+/* WARNING */
+.callout-warning {
+    background-color: #fff1e5 !important;
+    border-left-color: #e36209 !important;
+}
+
+.callout-warning::before {
+    content: "⚠️ Warning";
+    font-weight: bold;
+    color: #e36209;
+    margin-right: 0.5em;
+    display: block;
+    margin-bottom: 0.5em;
+    font-size: 1.05em;
+}
+
+/* CAUTION */
+.callout-caution {
+    background-color: #ffebe9 !important;
+    border-left-color: #cf222e !important;
+}
+
+.callout-caution::before {
+    content: "🚨 Caution";
+    font-weight: bold;
+    color: #cf222e;
+    margin-right: 0.5em;
+    display: block;
+    margin-bottom: 0.5em;
+    font-size: 1.05em;
 }
