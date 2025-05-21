@@ -11,7 +11,7 @@ const outputHtmlFlag = process.argv.includes('--html'); // Default to false if n
 const titlePageFlag = !process.argv.includes('--no-title-page'); // Default to true if not specified
 
 if (!inputMd) {
-    console.error('Error: Please provide the input Markdown file as an argument.');
+    console.error('❌ Error: Please provide the input Markdown file as an argument.');
     process.exit(1);
 }
 
@@ -39,21 +39,36 @@ const pdfOptions = {
     scale: 1.0,
 };
 
+console.log('📄 Starting PDF generation process...');
+console.log(`   - Input Markdown: ${inputMd}`);
+console.log(`   - Output PDF: ${outputPdf}`);
+if (outputHtmlFlag) {
+    console.log(`   - Output HTML: ${outputHtml}`);
+}
+if (titlePageFlag && pageMetadata.title) {
+    console.log('   - Title page will be included.');
+} else {
+    console.log('   - Title page will NOT be included.');
+}
 
 (async () => {
     try {
         if (fs.existsSync(jsPreprocessorFile)) {
+            console.log('🔧 Found JS preprocessor file, injecting into Markdown...');
             const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
             markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
         }
 
         // Generate HTML if requested
         if (outputHtmlFlag) {
+            console.log('🌐 Generating HTML output...');
             const generateHtml = require('./lib/html-generator');
             await generateHtml(inputMd, mainContentStylesheetFile, outputHtml);
+            console.log('✅ HTML output generated.');
         }
 
         // Generate main content PDF in memory
+        console.log('🖨️ Generating main content PDF...');
         const mainContentPdf = await mdToPdf(
             { content: markdownContent },
             {
@@ -67,27 +82,33 @@ const pdfOptions = {
                 },
             }
         );
+        console.log('✅ Main content PDF generated.');
 
         let mainPdfDoc = await PDFDocument.load(mainContentPdf.content);
 
         // Generate and prepend title page, then reset page numbers if needed
         if (titlePageFlag && pageMetadata.title) {
+            console.log('📝 Generating title page PDF...');
             const titlePagePdfBuffer = await generateTitlePagePdf(pageMetadata, pdfOptions);
             const titlePdfDoc = await PDFDocument.load(titlePagePdfBuffer);
             mainPdfDoc = await prependTitlePage(mainPdfDoc, titlePdfDoc);
+            console.log('✅ Title page prepended.');
 
             // Reset page labels
             mainPdfDoc = await resetPageLabels(mainPdfDoc);
+            console.log('🔢 Page labels set.');
         }
 
         // Crop all pages to A4 in memory
+        console.log('✂️ Cropping all pages to A4...');
         mainPdfDoc = await cropPdfToA4(mainPdfDoc);
+        console.log('✅ Cropping complete.');
 
         // Save final PDF to disk
         const finalPdfBytes = await mainPdfDoc.save();
         fs.writeFileSync(outputPdf, finalPdfBytes);
-        console.log(`PDF generated: ${outputPdf}`);
+        console.log(`🎉 PDF generated successfully: ${outputPdf}`);
     } catch (error) {
-        console.error('Error during PDF generation:', error.message);
+        console.error('❌ Error during PDF generation:', error.message);
     }
 })();
