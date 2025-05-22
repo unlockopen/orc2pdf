@@ -1,0 +1,7 @@
+# Filename must be author email address with @ replaced by -
+name:
+title:
+bio:
+email:
+# A picture must be placed in ./data/authors/picture/ with the same filename.
+# Format can be .jpg or .png

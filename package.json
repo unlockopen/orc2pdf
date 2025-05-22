@@ -1,7 +1,13 @@
 {
+  "type": "module",
   "dependencies": {
     "gray-matter": "^4.0.3",
-    "md-to-pdf": "github:ninnlangel/md-to-pdf",
-    "pdf-lib": "^1.17.1"
+    "md-to-pdf": "^5.2.4",
+    "pdf-lib": "^1.17.1",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.0.0",
+    "markdown-it-callouts": "^1.0.0",
+    "markdown-it-mermaid": "",
+    "highlight.js": "^11.9.0"
   }
 }

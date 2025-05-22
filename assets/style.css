@@ -13,7 +13,7 @@
     --page-margin-right: 2cm;
     --page-margin-bottom: 1cm;
     --h1-top-margin: 12cm;
-    --title-font-weight: 400;
+    --title-font-weight: 200;
     --page-height: 297mm;
     --page-width: 210mm;
     --page-bleed: 1mm;
@@ -66,6 +66,7 @@ h6 {
 h1 {
     font-size: 3rem !important;
     margin-top: var(--h1-top-margin) !important;
+    font-weight: 400 !important;
 }
 
 h2 {
@@ -73,8 +74,6 @@ h2 {
     font-size: 2rem !important;
     margin-bottom: 3rem !important;
     page-break-before: always;
-    font-weight: 200 !important;
-
 }
 
 h1+h2 {

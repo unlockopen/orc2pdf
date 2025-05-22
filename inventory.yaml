@@ -1,0 +1,19 @@
+# Title : displayed in H1 in both cover and front page, and in the footer
+title: CRA Resource Inventory
+# Subtitle (optional) : displayed in lighter weight below the title if present, a ":" separator is added
+subtitle: references relevant to the development and integration of open source under the Cyber Resilience Act
+# Short title (optional) : displayd in place of title in the footer (if full title is too long)
+short-title:
+# Authors : author email addresses with the @ replaced by _
+authors:
+  - tobie@unlockopen.com
+  - someone@gmail.com
+# - email_gmail.com
+# Version : as it appears in the footer.
+version: Version 1 - may 26th 2025
+# License : the license under which the document is printed, appears in the footer
+license: MIT
+# TitlePage : adds a title page to the final PDF, true or false
+title-page: true
+# TableOfContent : generates a table of content automatically, true or false
+table-of-content: true

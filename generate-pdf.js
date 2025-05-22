@@ -1,14 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const { mdToPdf } = require('md-to-pdf');
-const { PDFDocument } = require('pdf-lib');
-const generateTitlePagePdf = require('./lib/title-page-generator');
-const { prependTitlePage, resetPageLabels, cropPdfToA4 } = require('./lib/pdf-manipulation');
-const { extractMetadata, injectVariables } = require('./lib/metadata');
+import fs from 'fs';
+import path from 'path';
+import { mdToPdf } from 'md-to-pdf';
+import { PDFDocument } from 'pdf-lib';
+import generateTitlePagePdf from './lib/title-page-generator.js';
+import { prependTitlePage, resetPageLabels, cropPdfToA4 } from './lib/pdf-manipulation.js';
+import { getFileMetadata, injectVariables } from './lib/metadata.js';
+import mdToHtml from './lib/md-to-html.js';
+import htmlToHtml from './lib/html-to-html.js';
 
 const inputMd = process.argv[2];
-const outputHtmlFlag = process.argv.includes('--html'); // Default to false if not specified
-const titlePageFlag = !process.argv.includes('--no-title-page'); // Default to true if not specified
+const outputHtmlFlag = process.argv.includes('--html');
+const titlePageFlag = !process.argv.includes('--no-title-page');
 
 if (!inputMd) {
     console.error('❌ Error: Please provide the input Markdown file as an argument.');
@@ -18,16 +20,22 @@ if (!inputMd) {
 const outputPdf = path.basename(inputMd, path.extname(inputMd)) + '.pdf';
 const outputHtml = path.basename(inputMd, path.extname(inputMd)) + '.html';
 
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const headerFile = path.resolve(__dirname, 'assets/header.html');
 const footerFile = path.resolve(__dirname, 'assets/footer.html');
 const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
 const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
+const metadataFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.yaml');
 
 let markdownContent = fs.readFileSync(inputMd, 'utf8');
 let headerContent = fs.readFileSync(headerFile, 'utf8');
 let footerContent = fs.readFileSync(footerFile, 'utf8');
 
-const pageMetadata = extractMetadata(markdownContent);
+// Get metadata from the yaml file or create it if it doesn't exist
+getFileMetadata(metadataFile);
 
 // Define base PDF options
 const pdfOptions = {
@@ -53,26 +61,36 @@ if (titlePageFlag && pageMetadata.title) {
 
 (async () => {
     try {
+        // 1. Always generate HTML from Markdown (new way, with plugins)
+        console.log('🌐 Generating HTML from Markdown...');
+        let htmlContent = await mdToHtml(inputMd, mainContentStylesheetFile);
+
+        // 2. If JS preprocessor exists, append it as a <script> to the HTML
         if (fs.existsSync(jsPreprocessorFile)) {
-            console.log('🔧 Found JS preprocessor file, injecting into Markdown...');
+            console.log('🔧 Found JS preprocessor file, injecting into HTML...');
             const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
-            markdownContent += `\n\n<script>\n${jsContent}\n</script>`;
+            // Insert before </body> if present, else append
+            if (htmlContent.includes('</body>')) {
+                htmlContent = htmlContent.replace(
+                    '</body>',
+                    `<script>\n${jsContent}\n</script>\n</body>`
+                );
+            } else {
+                htmlContent += `\n<script>\n${jsContent}\n</script>`;
+            }
         }
 
-        // Generate HTML if requested
+        // 3. If --html, write the HTML to disk
         if (outputHtmlFlag) {
-            console.log('🌐 Generating HTML output...');
-            const generateHtml = require('./lib/html-generator');
-            await generateHtml(inputMd, mainContentStylesheetFile, outputHtml);
-            console.log('✅ HTML output generated.');
+            htmlToHtml(htmlContent, outputHtml)
         }
 
-        // Generate main content PDF in memory
-        console.log('🖨️ Generating main content PDF...');
+        // 4. Generate main content PDF from HTML
+        console.log('🖨️ Generating main content PDF from HTML...');
         const mainContentPdf = await mdToPdf(
-            { content: markdownContent },
+            { content: htmlContent },
             {
-                stylesheet: [mainContentStylesheetFile],
+                stylesheet: mainContentStylesheetFile,
                 pdf_options: pdfOptions,
                 beforePrint: async (page) => {
                     await page.evaluate(() => new Promise((resolve) => {
@@ -89,6 +107,7 @@ if (titlePageFlag && pageMetadata.title) {
         // Generate and prepend title page, then reset page numbers if needed
         if (titlePageFlag && pageMetadata.title) {
             console.log('📝 Generating title page PDF...');
+            // You may want to update generateTitlePagePdf to accept HTML as well, or keep using Markdown for the title page.
             const titlePagePdfBuffer = await generateTitlePagePdf(pageMetadata, pdfOptions);
             const titlePdfDoc = await PDFDocument.load(titlePagePdfBuffer);
             mainPdfDoc = await prependTitlePage(mainPdfDoc, titlePdfDoc);
