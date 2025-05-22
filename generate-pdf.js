@@ -11,10 +11,6 @@ import {
     HEADER_FILE,
     FOOTER_FILE,
     MAIN_CONTENT_STYLESHEET,
-    TITLE_PAGE_STYLESHEET,
-    AUTHORS_DIR,
-    AUTHOR_TEMPLATE_FILE,
-    METADATA_TEMPLATE_FILE
 } from './lib/config.js';
 
 const inputMd = process.argv[2];
@@ -32,7 +28,6 @@ const outputHtml = path.basename(inputMd, path.extname(inputMd)) + '.html';
 const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
 const metadataFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.yaml');
 
-let markdownContent = fs.readFileSync(inputMd, 'utf8');
 let headerContent = fs.readFileSync(HEADER_FILE, 'utf8');
 let footerContent = fs.readFileSync(FOOTER_FILE, 'utf8');
 
