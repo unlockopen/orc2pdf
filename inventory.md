@@ -15,8 +15,6 @@ This document is released under the [CC-BY 4.0 License](https://github.com/orcwg
 
 This document is developed in the open, [on GitHub](https://github.com/orcwg/cra-hub/blob/main/inventory.md). To contribute to future revisions of this document or submit errata, please send a pull request or [open an issue](https://github.com/orcwg/cra-hub/issues/new).
 
-## Table of Content
-
 [[toc]]
 
 ## 1. Principles of security resilience
