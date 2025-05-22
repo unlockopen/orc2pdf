@@ -1072,6 +1072,8 @@ If you have contributed to this document and aren't properly acknowledged or if 
 
 This document was compiled, curated, and edited by Maxim Baele (Toreon/OWASP) and Tobie Langel (UnlockOpen/Eclipse Foundation).
 
+<!-- [[authors]] -->
+
 ## Annex I - LLM Usage
 
 **Prompt used:**

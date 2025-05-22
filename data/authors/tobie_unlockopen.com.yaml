@@ -1,0 +1,7 @@
+# Filename must be author email address with @ replaced by -
+name: Tobie Langel
+title: Principal
+bio: This other guy's bio
+email: tobie@unlockopen.com
+# Picture file tobie_unlockopen.com.jpg or tobie_unlockopen.com.png must be saved
+# in ./data/authors/pictures/

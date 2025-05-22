@@ -13,5 +13,6 @@ version:
 license:
 # TitlePage : adds a title page to the final PDF, true or false
 title-page: true
-# TableOfContent : generates a table of content automatically, true or false
+# TableOfContent : generates a table of content automatically
+# Replaces [[toc]] placeholder in MD file.
 table-of-content: true

@@ -7,6 +7,7 @@ import { prependTitlePage, resetPageLabels, cropPdfToA4 } from './lib/pdf-manipu
 import { getFileMetadata, injectVariables } from './lib/metadata.js';
 import mdToHtml from './lib/md-to-html.js';
 import htmlToHtml from './lib/html-to-html.js';
+import { injectAuthorsHtml } from './lib/authors-injection.js';
 import {
     HEADER_FILE,
     FOOTER_FILE,
@@ -58,11 +59,16 @@ if (titlePageFlag && pageMetadata.title) {
 
 (async () => {
     try {
-        // 1. Always generate HTML from Markdown (new way, with plugins)
-        console.log('🌐 Generating HTML from Markdown...');
-        let htmlContent = await mdToHtml(inputMd, MAIN_CONTENT_STYLESHEET);
+        // 1. Read the Markdown file and inject authors HTML
+        console.log('📖 Reading Markdown file and injecting authors HTML...');
+        let mdContent = fs.readFileSync(inputMd, 'utf8');
+        mdContent = injectAuthorsHtml(pageMetadata, mdContent);
 
-        // 2. If JS preprocessor exists, append it as a <script> to the HTML
+        // 2. Always generate HTML from Markdown (new way, with plugins)
+        console.log('🌐 Generating HTML from Markdown...');
+        let htmlContent = await mdToHtml(mdContent, MAIN_CONTENT_STYLESHEET);
+
+        // 3. If JS preprocessor exists, append it as a <script> to the HTML
         if (fs.existsSync(jsPreprocessorFile)) {
             console.log('🔧 Found JS preprocessor file, injecting into HTML...');
             const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
@@ -77,12 +83,12 @@ if (titlePageFlag && pageMetadata.title) {
             }
         }
 
-        // 3. If --html, write the HTML to disk
+        // 4. If --html, write the HTML to disk
         if (outputHtmlFlag) {
             htmlToHtml(htmlContent, outputHtml)
         }
 
-        // 4. Generate main content PDF from HTML
+        // 5. Generate main content PDF from HTML
         console.log('🖨️ Generating main content PDF from HTML...');
         const mainContentPdf = await mdToPdf(
             { content: htmlContent },

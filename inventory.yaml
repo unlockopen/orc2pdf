@@ -6,6 +6,8 @@ subtitle: references relevant to the development and integration of open source 
 short-title:
 # Authors : author email addresses with the @ replaced by _
 authors:
+ - tobie@unlockopen.com
+ - ninn@unlockopen.com
 # - email_gmail.com
 # Version : as it appears in the footer.
 version: Version 1 - may 26th 2025
