@@ -15,7 +15,7 @@ import {
     AUTHORS_DIR,
     AUTHOR_TEMPLATE_FILE,
     METADATA_TEMPLATE_FILE
-} from './config.js';
+} from './lib/config.js';
 
 const inputMd = process.argv[2];
 const outputHtmlFlag = process.argv.includes('--html');
