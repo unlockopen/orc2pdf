@@ -7,6 +7,15 @@ import { prependTitlePage, resetPageLabels, cropPdfToA4 } from './lib/pdf-manipu
 import { getFileMetadata, injectVariables } from './lib/metadata.js';
 import mdToHtml from './lib/md-to-html.js';
 import htmlToHtml from './lib/html-to-html.js';
+import {
+    HEADER_FILE,
+    FOOTER_FILE,
+    MAIN_CONTENT_STYLESHEET,
+    TITLE_PAGE_STYLESHEET,
+    AUTHORS_DIR,
+    AUTHOR_TEMPLATE_FILE,
+    METADATA_TEMPLATE_FILE
+} from './config.js';
 
 const inputMd = process.argv[2];
 const outputHtmlFlag = process.argv.includes('--html');
@@ -20,22 +29,15 @@ if (!inputMd) {
 const outputPdf = path.basename(inputMd, path.extname(inputMd)) + '.pdf';
 const outputHtml = path.basename(inputMd, path.extname(inputMd)) + '.html';
 
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const headerFile = path.resolve(__dirname, 'assets/header.html');
-const footerFile = path.resolve(__dirname, 'assets/footer.html');
-const mainContentStylesheetFile = path.resolve(__dirname, 'assets/main-content.css');
 const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.js');
 const metadataFile = path.join(path.dirname(inputMd), path.basename(inputMd, path.extname(inputMd)) + '.yaml');
 
 let markdownContent = fs.readFileSync(inputMd, 'utf8');
-let headerContent = fs.readFileSync(headerFile, 'utf8');
-let footerContent = fs.readFileSync(footerFile, 'utf8');
+let headerContent = fs.readFileSync(HEADER_FILE, 'utf8');
+let footerContent = fs.readFileSync(FOOTER_FILE, 'utf8');
 
 // Get metadata from the yaml file or create it if it doesn't exist
-getFileMetadata(metadataFile);
+const pageMetadata = getFileMetadata(metadataFile);
 
 // Define base PDF options
 const pdfOptions = {
@@ -63,7 +65,7 @@ if (titlePageFlag && pageMetadata.title) {
     try {
         // 1. Always generate HTML from Markdown (new way, with plugins)
         console.log('🌐 Generating HTML from Markdown...');
-        let htmlContent = await mdToHtml(inputMd, mainContentStylesheetFile);
+        let htmlContent = await mdToHtml(inputMd, MAIN_CONTENT_STYLESHEET);
 
         // 2. If JS preprocessor exists, append it as a <script> to the HTML
         if (fs.existsSync(jsPreprocessorFile)) {
@@ -90,7 +92,7 @@ if (titlePageFlag && pageMetadata.title) {
         const mainContentPdf = await mdToPdf(
             { content: htmlContent },
             {
-                stylesheet: mainContentStylesheetFile,
+                stylesheet: MAIN_CONTENT_STYLESHEET,
                 pdf_options: pdfOptions,
                 beforePrint: async (page) => {
                     await page.evaluate(() => new Promise((resolve) => {
@@ -107,7 +109,6 @@ if (titlePageFlag && pageMetadata.title) {
         // Generate and prepend title page, then reset page numbers if needed
         if (titlePageFlag && pageMetadata.title) {
             console.log('📝 Generating title page PDF...');
-            // You may want to update generateTitlePagePdf to accept HTML as well, or keep using Markdown for the title page.
             const titlePagePdfBuffer = await generateTitlePagePdf(pageMetadata, pdfOptions);
             const titlePdfDoc = await PDFDocument.load(titlePagePdfBuffer);
             mainPdfDoc = await prependTitlePage(mainPdfDoc, titlePdfDoc);
