@@ -1,3 +1,4 @@
+<!-- omit from toc -->
 ### Version 1 - May 12, 2025
 
 # CRA Resource Inventory: references relevant to the development and integration of open source under the Cyber Resilience Act
@@ -16,25 +17,7 @@ This document is developed in the open, [on GitHub](https://github.com/orcwg/cra
 
 ## Table of Content
 
-* [1. Principles of security resilience][Section 1]
-  * [1.1 Risk analysis][Section 1.1]
-  * [1.2 Secure design and secure coding principles][Section 1.2]
-  * [1.3 Security processes and governance][Section 1.3]
-* [2. Generic Security Requirements][Section 2]
-* [3. Vulnerability management][Section 3]
-  * [3.1 Vulnerability management specifications and policy templates][Section 3.1]
-  * [3.2 Existing open source foundation policies][Section 3.2]
-  * [3.3 Vulnerability management guidelines][Section 3.3]
-* [4. SBOM][Section 4]
-  * [4.1 Technical specifications for SBOMs][Section 4.1]
-  * [4.2 Technical specifications for software identification][Section 4.2]
-  * [4.3 SBOM implementation guidelines][Section 4.3]
-* [5. Due diligence requirements][Section 5]
-* [6. Security attestations][Section 6]
-* [7. Similar legislation][Section 7]
-* [8. Other][Section 8]
-* [Acknowledgments][]
-* [Annex I - LLM Usage][LLM usage]
+[[toc]]
 
 ## 1. Principles of security resilience
 
@@ -1086,24 +1069,6 @@ This document was compiled, curated, and edited by Maxim Baele (Toreon/OWASP) an
 
 OpenAI ChatGPT 4.5 using "deep research".
 
-[Section 1]:   #1-principles-of-security-resilience
-[Section 1.1]: #11-risk-analysis
-[Section 1.2]: #12-secure-design-and-secure-coding-principles
-[Section 1.3]: #13-security-processes-and-governance
-[Section 2]:   #2-generic-security-requirements
-[Section 3]:   #3-vulnerability-management
-[Section 3.1]: #31-vulnerability-management-specifications-and-policy-templates
-[Section 3.2]: #32-existing-open-source-foundation-policies
-[Section 3.3]: #33-vulnerability-management-guidelines
-[Section 4]:   #4-sbom
-[Section 4.1]: #41-technical-specifications-for-sboms
-[Section 4.2]: #42-technical-specifications-for-software-identification
-[Section 4.3]: #43-sbom-implementation-guidelines
-[Section 5]:   #5-due-diligence-requirements
-[Section 6]:   #6-security-attestations
-[Section 7]:   #7-similar-legislation
-[Section 8]:   #8-other
-[Acknowledgments]: #acknowledgments
 [LLM usage]:   #annex-i---llm-usage
 
 [Annex I]: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202402847#anx_I
