@@ -2,6 +2,6 @@
 name:
 title:
 bio:
-email:
-# A picture must be placed in ./data/authors/picture/ with the same filename.
-# Format can be .jpg or .png
+email: {{ email }}
+# Picture file {{ authorId }}.jpg or {{ authorId }}.png must be saved
+# in ./data/authors/pictures/
