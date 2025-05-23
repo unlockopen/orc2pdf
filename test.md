@@ -72,6 +72,12 @@ license: CC-BY 4.0
 
 > This is a standard blockquote.
 
+<!-- legal excerpt -->
+> This is a legal excerpt blockquote, obtained by inserting ```<!-- legal excerpt -->``` one line before the beginning of the blockquote.
+
+> [!Legal]
+> This is another version of legal
+
 > [!Note]
 > This is a GitHub note callout.
 
@@ -86,6 +92,7 @@ license: CC-BY 4.0
 
 > [!Caution]
 > This is a GitHun caution callout.
+
 ---
 
 ## Code
