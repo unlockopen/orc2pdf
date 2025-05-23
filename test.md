@@ -1,27 +1,18 @@
-### Version: 1.0
+---
+version: 0.1.28
+date: May 12, 2025
+status: draft
+authors: Tobie Langel<tobie@unlockopen.com>, Ninn Langel <info@ninnlangel.com>
+license: CC-BY 4.0
+---
+<!-- [[titlepage]] -->
 
 # Test Case: Comprehensive Markdown Elements
 
 > **Note**
 > This document demonstrates a wide variety of Markdown features and GitHub callout styles.
 
----
-
-## Table of Contents
-
-1. [Headings](#headings)
-2. [Text Formatting](#text-formatting)
-3. [Lists](#lists)
-4. [Links & Images](#links--images)
-5. [Blockquotes & Callouts](#blockquotes--callouts)
-6. [Code](#code)
-7. [Tables](#tables)
-8. [Details/Summary](#detailssummary)
-9. [Task Lists](#task-lists)
-10. [Horizontal Rule](#horizontal-rule)
-11. [Footnotes](#footnotes)
-
----
+<!-- [[toc]] -->
 
 ## Headings
 

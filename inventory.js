@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (key === 'Title') {
         extractedItem[key] = value;
-      } else {
+      } else if (value) {
         extractedItem['metadata'][key] = value;
       }
     });
@@ -118,40 +118,5 @@ document.addEventListener('DOMContentLoaded', () => {
     return labeledMetadata;
   }
 
-  function restructureTableOfContent() {
-    const tocHeader = Array.from(document.querySelectorAll('h2')).find(
-      (header) => header.textContent.trim().toLowerCase() === 'table of content'
-    );
-
-    if (tocHeader) {
-      const tocList = tocHeader.nextElementSibling;
-      if (tocList && tocList.tagName === 'UL') {
-        tocList.classList.add('table-of-content');
-      }
-    }
-  }
-
-  // Remove the first h3
-  const firstH3 = document.querySelector('h3');
-  if (firstH3) {
-    firstH3.remove();
-  }
-
-  // Split the first h1 into a title and a subtitle
-  const firstH1 = document.querySelector('h1');
-  if (firstH1) {
-    const title = firstH1.textContent.split(':')[0].trim();
-    const subtitle = firstH1.textContent.split(':')[1]?.trim() || '';
-    firstH1.textContent = title + ':';
-    const subtitleElement = document.createElement('h2');
-    subtitleElement.textContent = subtitle;
-    firstH1.parentElement.insertBefore(subtitleElement, firstH1.nextSibling);
-  }
-
-
-
-  // Add 'table-of-content' class to the first <ul> after the first <h2>
-  restructureTableOfContent();
   restructureInventoryItems();
-  addCalloutClasses();
 });

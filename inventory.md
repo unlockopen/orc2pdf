@@ -1,7 +1,14 @@
-<!-- omit from toc -->
-### Version 1 - May 12, 2025
+---
+version: Version 1
+date: May 12, 2025
+status: draft
+authors: Tobie Langel<tobie@unlockopen.com>
+license: CC-BY 4.0
+---
 
-# CRA Resource Inventory: references relevant to the development and integration of open source under the Cyber Resilience Act
+<!-- [[titlepage]] -->
+
+# CRA Resource Inventory: References relevant to the development and integration of open source under the Cyber Resilience Act
 
 The goal of this document is to provide a comprehensive list of resources that are relevant to the obligations of open source software stewards and manufacturers when it comes to the development and integration of open source under the Cyber Resilience Act (CRA) and to the interactions between all of the different stakeholders. The underlying purpose is to provide specification and standardization efforts with easy access to documented industry and community best practices.
 
@@ -16,7 +23,7 @@ This document is released under the [CC-BY 4.0 License](https://github.com/orcwg
 
 This document is developed in the open, [on GitHub](https://github.com/orcwg/cra-hub/blob/main/inventory.md). To contribute to future revisions of this document or submit errata, please send a pull request or [open an issue](https://github.com/orcwg/cra-hub/issues/new).
 
-[[toc]]
+<!-- [[toc]] -->
 
 ## 1. Principles of security resilience
 

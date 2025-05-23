@@ -43,6 +43,22 @@ body {
     padding: 0 !important;
 }
 
+.draft::before {
+    content: "DRAFT";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    font-size: 10vw;
+    color: #cccccc;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 9999;
+    letter-spacing: 2vw;
+    white-space: nowrap;
+    user-select: none;
+}
+
 .spacer {
     break-after: page !important;
 }
@@ -198,7 +214,7 @@ li {
 
 ol,
 ol li {
-    list-style: upper-roman !important;
+    list-style: upper-latin !important;
 }
 
 /* Styles for the blockquotes from legal documents */
