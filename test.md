@@ -73,14 +73,7 @@ license: CC-BY 4.0
 > This is a standard blockquote.
 
 <!-- legal excerpt -->
-> This is a legal excerpt blockquote, obtained by inserting ```<!-- legal excerpt -->``` one line before the beginning of the blockquote.
-
-> [!Legal]
-> This is another version of legal
-
-:::legal-excerpt
-> Legal excerpt here.
-:::
+> This one displays as a normal blockquote in github, and I can style it later, and we could directly throw in metadata on the law text to display nicely if usefull.
 
 > [!Note]
 > This is a GitHub note callout.

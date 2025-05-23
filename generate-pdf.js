@@ -6,13 +6,12 @@ import generateTitlePagePdf from './lib/title-page-generator.js';
 import { prependTitlePage, resetPageLabels, cropPdfToA4 } from './lib/pdf-manipulation.js';
 import { processInputMarkdown } from './lib/input-markdown-processor.js';
 import mdToHtml from './lib/md-to-html.js';
-import htmlToHtml from './lib/html-to-html.js';
 import { getFooter, getHeader, injectAuthorsHtml } from './lib/html-block-generators.js';
-import { inlineImagesAsBase64 } from './lib/picture-encoder.js';
+import { inlineImagesAsBase64, processLegalExcerpts } from './lib/html-processor.js';
 import {
     MAIN_CONTENT_STYLESHEET,
 } from './lib/config.js';
-import { get } from 'http';
+import generateHtmlFromHtml from './lib/html-to-html.js';
 
 const inputMd = process.argv[2];
 const outputHtmlFlag = process.argv.includes('--html');
@@ -29,8 +28,6 @@ const jsPreprocessorFile = path.join(path.dirname(inputMd), path.basename(inputM
 
 // Get metadata from the yaml file or create it if it doesn't exist
 let { markdown, pageMetadata, messages } = processInputMarkdown(inputMd);
-
-console.log(pageMetadata);
 
 const header = getHeader(pageMetadata);
 const footer = getFooter(pageMetadata);
@@ -81,7 +78,10 @@ if (Object.keys(messages.errors).length > 0) {
         //console.log('🌐 Generating HTML from Markdown...');
         let htmlContent = await mdToHtml(markdown, MAIN_CONTENT_STYLESHEET, pageMetadata);
 
-        // 3. If JS preprocessor exists, append it as a <script> to the HTML
+        // 3. Process legal excerpts and add them to the HTML
+        htmlContent = processLegalExcerpts(htmlContent);
+
+        // 4. If JS preprocessor exists, append it as a <script> to the HTML
         if (fs.existsSync(jsPreprocessorFile)) {
             //console.log('🔧 Found JS preprocessor file, injecting into HTML...');
             const jsContent = fs.readFileSync(jsPreprocessorFile, 'utf8');
@@ -96,22 +96,23 @@ if (Object.keys(messages.errors).length > 0) {
             }
         }
 
-        // 4. If --html, write the HTML to disk before inlining images
+        // 5. If --html, write the HTML to disk before inlining images
         if (outputHtmlFlag) {
-            htmlToHtml(htmlContent, outputHtml)
+            await generateHtmlFromHtml(htmlContent, pageMetadata, outputHtml);
         }
 
-        // 5. Inline images as base64
+        // 6. Inline images as base64
         //console.log('🖼️ Inlining images as base64...');
         htmlContent = inlineImagesAsBase64(htmlContent, path.dirname(inputMd));
         //console.log('✅ Images inlined.');
 
 
-        // 6. Generate main content PDF from HTML
+        // 7. Generate main content PDF from HTML
         //console.log('🖨️ Generating main content PDF from HTML...');
         const mainContentPdf = await mdToPdf(
             { content: htmlContent },
             {
+                body_class: pageMetadata.status || '',
                 stylesheet: MAIN_CONTENT_STYLESHEET,
                 pdf_options: pdfOptions,
                 beforePrint: async (page) => {

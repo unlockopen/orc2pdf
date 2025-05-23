@@ -24,6 +24,9 @@ body {
     /* Stretch to cover the entire page */
 }
 
+body.draft {
+    background-color: red !important;
+}
 
 h1 {
     color: white !important;

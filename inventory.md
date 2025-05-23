@@ -29,6 +29,7 @@ This document is developed in the open, [on GitHub](https://github.com/orcwg/cra
 
 This section contains references which are relevant to the requirements expressed in [Annex I, Part I(1)][Annex I] of the CRA. It corresponds to the [horizontal type "A" standard number 1][Horizontal standards] of the European Commission's standardisation request to the ESOs:
 
+<!-- [[legal]] -->
 > Products with digital elements shall be designed, developed and produced in such a way that they ensure an appropriate level of cybersecurity based on the risks.
 
 The impact on open source software stewards is limited to a partial obligation to "foster development of secure product" expressed in [Article 24(1)][Article 24].
@@ -211,6 +212,7 @@ The impact on open source software stewards is limited to a partial obligation t
 
 This section contains references which are relevant to the requirements expressed in [Annex I, Part I(2)][Annex I] of the CRA. It corresponds to the [horizontal type "B" standards number 2 to 14][Type B standards] of the European Commission's standardisation request to the ESOs.
 
+<!-- [[legal]] -->
 > On the basis of the cybersecurity risk assessment referred to in Article 13(2) and where applicable, products with digital elements shall:
 >
 > (a) be made available on the market without known exploitable vulnerabilities;\
@@ -271,6 +273,7 @@ This section contains references which are relevant to:
 
 1. The requirements expressed in [Annex I, Part II][Annex I] of the CRA. This corresponds to the [horizontal type "B" standard number 15][Horizontal standards] of the European Commission's standardisation request to the ESOs:
 
+    <!-- [[legal]] -->
     > Manufacturers of products with digital elements shall:\
     > (1) identify and document vulnerabilities and components contained in products with digital elements, including by drawing up a software bill of materials in a commonly used and machine-readable format covering at the very least the top-level dependencies of the products;\
     > (2) in relation to the risks posed to products with digital elements, address and remediate vulnerabilities without delay, including by providing security updates; where technically feasible, new security updates shall be provided separately from functionality updates;\
@@ -283,6 +286,7 @@ This section contains references which are relevant to:
 
 2. The requirement for open source software stewards to "put in place and document a cybersecurity policy" expressed in [Article 24(1)][Article 24] of the CRA. It has no corresponding standard request in the [European Commission's standardisation request to the ESOs][ESO request].
 
+    <!-- [[legal]] -->
     > 1\. Open-source software stewards shall put in place and document in a verifiable manner a cybersecurity policy to foster the development of a secure product with digital elements as well as an effective handling of vulnerabilities by the developers of that product. That policy shall also foster the voluntary reporting of vulnerabilities as laid down in Article 15 by the developers of that product and take into account the specific nature of the open-source software steward and the legal and organisational arrangements to which it is subject. That policy shall, in particular, include aspects related to documenting, addressing and remediating vulnerabilities and promote the sharing of information concerning discovered vulnerabilities within the open-source community.
 
 ### 3.1 Vulnerability management specifications and policy templates
@@ -722,6 +726,7 @@ This section contains references which are relevant to the requirements expresse
 
 This section contains references which are relevant to the requirement to "exercise due diligence" expressed in [Article 13(5)][Article 13] of the CRA. It has no corresponding standard request in the [European Commission's standardisation request to the ESOs][ESO request].
 
+<!-- [[legal]] -->
 > For the purpose of complying with paragraph 1, manufacturers shall exercise due diligence when integrating components sourced from third parties so that those components do not compromise the cybersecurity of the product with digital elements, including when integrating components of free and open-source software that have not been made available on the market in the course of a commercial activity.
 
 > [!NOTE]

@@ -18,6 +18,7 @@ ul.inventory-list {
     padding: 0 !important;
     margin-top: 1rem !important;
     margin-botton: 1rem !important;
+    margin-left: 2rem !important;
 }
 
 .inventory-list>li {
