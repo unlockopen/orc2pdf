@@ -8,6 +8,7 @@ import { getFileMetadata, injectVariables } from './lib/metadata.js';
 import mdToHtml from './lib/md-to-html.js';
 import htmlToHtml from './lib/html-to-html.js';
 import { injectAuthorsHtml } from './lib/authors-injection.js';
+import { inlineImagesAsBase64 } from './lib/picture-encoder.js';
 import {
     HEADER_FILE,
     FOOTER_FILE,
@@ -83,12 +84,18 @@ if (titlePageFlag && pageMetadata.title) {
             }
         }
 
-        // 4. If --html, write the HTML to disk
+        // 4. If --html, write the HTML to disk before inlining images
         if (outputHtmlFlag) {
             htmlToHtml(htmlContent, outputHtml)
         }
 
-        // 5. Generate main content PDF from HTML
+        // 5. Inline images as base64
+        console.log('🖼️ Inlining images as base64...');
+        htmlContent = inlineImagesAsBase64(htmlContent, path.dirname(inputMd));
+        console.log('✅ Images inlined.');
+
+
+        // 6. Generate main content PDF from HTML
         console.log('🖨️ Generating main content PDF from HTML...');
         const mainContentPdf = await mdToPdf(
             { content: htmlContent },
