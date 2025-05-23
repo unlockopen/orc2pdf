@@ -78,6 +78,10 @@ license: CC-BY 4.0
 > [!Legal]
 > This is another version of legal
 
+:::legal-excerpt
+> Legal excerpt here.
+:::
+
 > [!Note]
 > This is a GitHub note callout.
 
