@@ -316,7 +316,7 @@ div.table-of-content>ul {
 div.table-of-content>ul>li>a {
     width: 100%;
     display: block;
-    font-weight: var(--title-font-weight);
+    font-weight: 400;
     color: black;
     list-style: none;
     padding: 0;
@@ -344,7 +344,7 @@ div.table-of-content>ul>li>a {
 .table-of-content ul li ul li a {
     width: 100%;
     display: block;
-    font-weight: 300;
+    font-weight: 200;
     color: black;
     list-style: none;
     padding: 0 !important;

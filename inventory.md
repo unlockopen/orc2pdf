@@ -7,6 +7,7 @@ The goal of this document is to provide a comprehensive list of resources that a
 
 _Note: the description of each resource has been generated using a large language model and verified for accuracy. See [Annex I - LLM Usage][LLM usage] below for the prompts and tools used._
 
+<!-- omit from toc -->
 ## Status of this document
 
 This document is a [deliverable](https://github.com/orcwg/orcwg/blob/main/cyber-resilience-sig/deliverables.md#12-inventory) of the [Cyber Resilience SIG](https://github.com/orcwg/orcwg/tree/main/cyber-resilience-sig#readme) of the [Open Regulatory Compliance Working Group (ORC)](https://orcwg.org/) of the [Eclipse Foundation](https://www.eclipse.org/). It was approved to be released as version 1.0 by the Cyber Resilience SIG on May 12, 2025. It represents the consensus of ORC and its [members](https://orcwg.org/membership/).
