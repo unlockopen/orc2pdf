@@ -3,6 +3,7 @@
   "dependencies": {
     "cheerio": "^1.0.0",
     "gray-matter": "^4.0.3",
+    "highlight": "^0.2.4",
     "highlight.js": "^11.9.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.0.0",
