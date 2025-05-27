@@ -72,7 +72,7 @@ license: CC-BY 4.0
 
 > This is a standard blockquote.
 
-<!-- legal excerpt -->
+<!-- [[legal]] -->
 > This one displays as a normal blockquote in github, and I can style it later, and we could directly throw in metadata on the law text to display nicely if usefull.
 
 > [!Note]
