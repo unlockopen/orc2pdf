@@ -8,7 +8,6 @@
     "markdown-it-anchor": "^9.0.0",
     "markdown-it-callouts": "^1.0.0",
     "markdown-it-table-of-contents": "^0.9.0",
-    "md-to-pdf": "^5.2.4",
     "pdf-lib": "^1.17.1"
   }
 }
