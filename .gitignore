@@ -2,9 +2,6 @@ node_modules
 inventory.html
 inventory.pdf
 package-lock.json
-data/authors/pictures/.DS_Store
-data/.DS_Store
-data/authors/.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
+**/.DS_Store
+test.pdf
+test.html
