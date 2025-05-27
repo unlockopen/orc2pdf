@@ -1,17 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import { mdToPdf } from 'md-to-pdf';
+import { mdToPdf } from 'md-to-pdf'; // To be removed soon.
 import { PDFDocument } from 'pdf-lib';
 import generateTitlePagePdf from './lib/title-page-generator.js';
 import { prependTitlePage, resetPageLabels, cropPdfToA4 } from './lib/pdf-manipulation.js';
 import { processInputMarkdown } from './lib/input-markdown-processor.js';
 import mdToHtml from './lib/md-to-html.js';
 import { getFooter, getHeader, injectAuthorsHtml } from './lib/html-block-generators.js';
-import { inlineImagesAsBase64, processLegalExcerpts } from './lib/html-processor.js';
-import {
-    MAIN_CONTENT_STYLESHEET,
-} from './lib/config.js';
+import { inlineImagesAsBase64, processLegalExcerpts, transformFileLinksToUrls } from './lib/html-DOM-processor.js';
+import { MAIN_CONTENT_STYLESHEET, TITLE_PAGE_STYLESHEET } from './lib/config.js';
 import generateHtmlFromHtml from './lib/html-to-html.js';
+import { generatePdfFromHtml } from './lib/html-to-pdf.js';
 
 const inputMd = process.argv[2];
 const outputHtmlFlag = process.argv.includes('--html');
@@ -103,9 +102,12 @@ if (Object.keys(messages.errors).length > 0) {
 
         // 6. Inline images as base64
         //console.log('🖼️ Inlining images as base64...');
-        htmlContent = inlineImagesAsBase64(htmlContent, path.dirname(inputMd));
+        htmlContent = transformFileLinksToUrls(htmlContent);
+        //htmlContent = inlineImagesAsBase64(htmlContent, path.dirname(inputMd));
         //console.log('✅ Images inlined.');
 
+        // 7.TEMP Generate a PDF from the new script
+        await generatePdfFromHtml(htmlContent, outputPdf);
 
         // 7. Generate main content PDF from HTML
         //console.log('🖨️ Generating main content PDF from HTML...');

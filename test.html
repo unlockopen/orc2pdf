@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Test Case</title>
+    <link rel="stylesheet" href="assets/main-content.css">
+    <style>
+        /* Mermaid container styling */
+        .mermaid-container {
+            text-align: center;
+            margin: 2rem 0;
+            break-inside: avoid;
+        }
+
+        .mermaid {
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: { fontFamily: 'inherit' },
+            flowchart: { useMaxWidth: true, htmlLabels: true },
+            sequence: { useMaxWidth: true },
+            gantt: { useMaxWidth: true }
+        });
+        window.mermaidReady = new Promise((resolve) => {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', checkMermaid);
+            } else { checkMermaid(); }
+            function checkMermaid() {
+                const mermaidElements = document.querySelectorAll('.mermaid');
+                if (mermaidElements.length === 0) { resolve(); return; }
+                let renderedCount = 0;
+                const totalCount = mermaidElements.length;
+                const checkRendered = () => {
+                    renderedCount++;
+                    if (renderedCount === totalCount) { setTimeout(() => resolve(), 100); }
+                };
+                mermaidElements.forEach((el, index) => {
+                    if (el.querySelector('svg')) { checkRendered(); }
+                    else {
+                        const observer = new MutationObserver((mutations) => {
+                            mutations.forEach((mutation) => {
+                                if (mutation.type === 'childList' &&
+                                    Array.from(mutation.addedNodes).some(node => node.tagName === 'SVG')) {
+                                    observer.disconnect(); checkRendered();
+                                }
+                            });
+                        });
+                        observer.observe(el, { childList: true, subtree: true });
+                        setTimeout(() => {
+                            if (!el.querySelector('svg')) { observer.disconnect(); checkRendered(); }
+                        }, 5000);
+                    }
+                });
+            }
+        });
+        window.checkMermaidStatus = () => {
+            const elements = document.querySelectorAll('.mermaid');
+            const rendered = document.querySelectorAll('.mermaid svg');
+            return { total: elements.length, rendered: rendered.length };
+        };
+    </script>
+</head>
+
+<body>
+    <h1 id="test-case" tabindex="-1">Test Case</h1>
+<!-- omit from toc -->
+<h2 id="comprehensive-markdown-elements" tabindex="-1">Comprehensive Markdown Elements</h2>
+<blockquote>
+<p><strong>Note</strong>
+This document demonstrates a wide variety of Markdown features and GitHub callout styles.</p>
+</blockquote>
+<div class="table-of-content"><h2 id="table-of-content">Table of Contents</h2><ul><li><a href="#headings">Headings</a></li><li><a href="#h2">H2</a><ul><li><a href="#h3">H3</a></li></ul></li><li><a href="#text-formatting">Text Formatting</a></li><li><a href="#lists">Lists</a><ul><li><a href="#unordered">Unordered</a></li><li><a href="#ordered">Ordered</a></li></ul></li><li><a href="#links--images">Links &amp; Images</a></li><li><a href="#blockquotes--callouts">Blockquotes &amp; Callouts</a></li><li><a href="#code">Code</a><ul><li><a href="#inline">Inline</a></li><li><a href="#block">Block</a></li></ul></li><li><a href="#tables">Tables</a></li><li><a href="#detailssummary">Details/Summary</a></li><li><a href="#task-lists">Task Lists</a></li><li><a href="#horizontal-rule">Horizontal Rule</a></li><li><a href="#mermaid">Mermaid</a><ul><li><a href="#heres-a-flowchart">Here’s a flowchart</a></li><li><a href="#and-a-sequence-diagram">And a sequence diagram</a></li></ul></li><li><a href="#footnotes">Footnotes</a></li></ul></div>
+<h2 id="headings" tabindex="-1">Headings</h2>
+<h1 id="h1" tabindex="-1">H1</h1>
+<h2 id="h2" tabindex="-1">H2</h2>
+<h3 id="h3" tabindex="-1">H3</h3>
+<h4 id="h4" tabindex="-1">H4</h4>
+<h5 id="h5" tabindex="-1">H5</h5>
+<h6 id="h6" tabindex="-1">H6</h6>
+<hr>
+<h2 id="text-formatting" tabindex="-1">Text Formatting</h2>
+<ul>
+<li><em>Italic</em></li>
+<li><strong>Bold</strong></li>
+<li><em><strong>Bold Italic</strong></em></li>
+<li><s>Strikethrough</s></li>
+<li><sup>Superscript</sup></li>
+<li><sub>Subscript</sub></li>
+<li><code>Inline code</code></li>
+</ul>
+<hr>
+<h2 id="lists" tabindex="-1">Lists</h2>
+<h3 id="unordered" tabindex="-1">Unordered</h3>
+<ul>
+<li>Item 1
+<ul>
+<li>Subitem 1.1
+<ul>
+<li>Subitem 1.1.1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Item 2</li>
+</ul>
+<h3 id="ordered" tabindex="-1">Ordered</h3>
+<ol>
+<li>First</li>
+<li>Second
+<ol>
+<li>Second - subitem</li>
+<li>Second - subitem 2</li>
+</ol>
+</li>
+<li>Third</li>
+</ol>
+<hr>
+<h2 id="links--images" tabindex="-1">Links &amp; Images</h2>
+<ul>
+<li><a href="https://github.com">GitHub</a></li>
+<li><img src="assets/test-image.png" alt="Test image" title="Test image"></li>
+</ul>
+<hr>
+<h2 id="blockquotes--callouts" tabindex="-1">Blockquotes &amp; Callouts</h2>
+<blockquote>
+<p>This is a standard blockquote.</p>
+</blockquote>
+<!-- legal excerpt -->
+<blockquote>
+<p>This one displays as a normal blockquote in github, and I can style it later, and we could directly throw in metadata on the law text to display nicely if usefull.</p>
+</blockquote>
+<div class="callout callout-note">
+<p>This is a GitHub note callout.</p>
+</div>
+<div class="callout callout-warning">
+<p>This is a GitHub warning callout.</p>
+</div>
+<div class="callout callout-tip">
+<p>This is a GitHub tip callout.</p>
+</div>
+<div class="callout callout-important">
+<p>This is a GitHub important callout.</p>
+</div>
+<div class="callout callout-caution">
+<p>This is a GitHun caution callout.</p>
+</div>
+<hr>
+<h2 id="code" tabindex="-1">Code</h2>
+<h3 id="inline" tabindex="-1">Inline</h3>
+<p>Here is some <code>inline code</code>.</p>
+<h3 id="block" tabindex="-1">Block</h3>
+<pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">hello_world</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Hello, world!"</span>)
+</code></pre>
+<pre><code class="hljs bash"><span class="hljs-comment"># Bash example</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"Hello, Markdown!"</span>
+</code></pre>
+<hr>
+<h2 id="tables" tabindex="-1">Tables</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alpha</td>
+<td>1</td>
+<td>First entry</td>
+</tr>
+<tr>
+<td>Beta</td>
+<td>2</td>
+<td>Second entry</td>
+</tr>
+<tr>
+<td>Gamma</td>
+<td>3</td>
+<td>Third entry</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="detailssummary" tabindex="-1">Details/Summary</h2>
+<details>
+  <summary>Click to expand for more info</summary>
+<ul>
+<li><strong>Title:</strong> Example Title</li>
+<li><strong>URL:</strong> <a href="https://example.com">Example</a></li>
+<li><strong>Publisher:</strong> Example Publisher</li>
+<li><strong>License:</strong> MIT</li>
+<li><strong>Type:</strong> Article</li>
+<li><strong>Publication date:</strong> 2024-06-01</li>
+</ul>
+</details>
+<hr>
+<h2 id="task-lists" tabindex="-1">Task Lists</h2>
+<ul>
+<li>[x] Write test case</li>
+<li>[ ] Review content</li>
+<li>[ ] Add more examples</li>
+</ul>
+<hr>
+<h2 id="horizontal-rule" tabindex="-1">Horizontal Rule</h2>
+<hr>
+<h2 id="mermaid" tabindex="-1">Mermaid</h2>
+<h3 id="heres-a-flowchart" tabindex="-1">Here’s a flowchart</h3>
+<pre><code class="hljs mermaid">graph TD
+    A[Start] --&gt; B{Is it working?}
+    B --&gt;|Yes| C[Great!]
+    B --&gt;|No| D[Debug]
+    D --&gt; B
+</code></pre>
+<h3 id="and-a-sequence-diagram" tabindex="-1">And a sequence diagram</h3>
+<pre><code class="hljs mermaid">sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    A-&gt;&gt;B: Hello Bob!
+    B--&gt;&gt;A: Hello Alice!
+</code></pre>
+<h2 id="footnotes" tabindex="-1">Footnotes</h2>
+<p>Here is a statement with a footnote.[^1]</p>
+<p>[^1]: This is the footnote text.</p>
+
+
+
+
+</body></html>

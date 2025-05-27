@@ -2,10 +2,8 @@
 version: 0.1.28
 date: May 12, 2025
 status: draft
-authors: Tobie Langel<tobie@unlockopen.com>, Ninn Langel <info@ninnlangel.com>
 license: CC-BY 4.0
 ---
-<!-- [[titlepage]] -->
 
 # Test Case: Comprehensive Markdown Elements
 
@@ -64,7 +62,7 @@ license: CC-BY 4.0
 ## Links & Images
 
 - [GitHub](https://github.com)
-- ![Sample Image](https://via.placeholder.com/100 "Placeholder Image")
+- ![Test image](assets/test-image.png "Test image")
 
 ---
 
@@ -149,6 +147,28 @@ echo "Hello, Markdown!"
 ## Horizontal Rule
 
 ---
+
+## Mermaid
+
+### Here's a flowchart
+
+```mermaid
+graph TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> B
+```
+
+### And a sequence diagram
+
+```mermaid
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    A->>B: Hello Bob!
+    B-->>A: Hello Alice!
+```
 
 ## Footnotes
 

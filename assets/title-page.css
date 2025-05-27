@@ -1,5 +1,5 @@
 /* importing the main content CSS file for the CRA inventory items */
-@import url("./assets/style.css");
+@import url("style.css");
 
 @page {
     size: calc(var(--page-width) + 2 * var(--page-bleed)) calc(var(--page-height) + 2 * var(--page-bleed)) !important;
