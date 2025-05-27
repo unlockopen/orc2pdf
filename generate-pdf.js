@@ -1,15 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { mdToPdf } from 'md-to-pdf'; // To be removed soon.
 import { PDFDocument } from 'pdf-lib';
-import generateTitlePagePdf from './lib/title-page-generator.js';
 import { prependTitlePage, resetPageLabels, cropPdfToA4 } from './lib/pdf-manipulation.js';
 import { processInputMarkdown } from './lib/input-markdown-processor.js';
 import mdToHtml from './lib/md-to-html.js';
-import { getFooter, getHeader, injectAuthorsHtml } from './lib/html-block-generators.js';
-import { inlineImagesAsBase64, processLegalExcerpts, transformFileLinksToUrls } from './lib/html-DOM-processor.js';
-import { MAIN_CONTENT_STYLESHEET, TITLE_PAGE_STYLESHEET } from './lib/config.js';
-import generateHtmlFromHtml from './lib/html-to-html.js';
+import { getFooter, getHeader, getTitlePage, injectAuthorsHtml } from './lib/html-block-generators.js';
+import { processLegalExcerpts, transformFileLinksToUrls } from './lib/html-DOM-processor.js';
+import { MAIN_CONTENT_STYLESHEET, PDF_CONFIG } from './lib/config.js';
 import { generatePdfFromHtml } from './lib/html-to-pdf.js';
 
 const inputMd = process.argv[2];
@@ -31,14 +28,17 @@ let { markdown, pageMetadata, messages } = processInputMarkdown(inputMd);
 const header = getHeader(pageMetadata);
 const footer = getFooter(pageMetadata);
 
-// Define base PDF options
-const pdfOptions = {
-    displayHeaderFooter: true,
+// Add footer and header to the default PDF options
+const mainPdfOptions = {
+    ...PDF_CONFIG.pdf_options,
     headerTemplate: header,
     footerTemplate: footer,
-    printBackground: true,
-    preferCSSPageSize: true,
-    scale: 1.0,
+};
+
+const titlePagePdfOptions = {
+    ...PDF_CONFIG.pdf_options,
+    headerTemplate: header,
+    footerTemplate: footer.replace('class="pageNumber"', ''),
 };
 
 console.log(`📄 Starting PDF generation for ${pageMetadata.title || inputMd}`);
@@ -97,42 +97,23 @@ if (Object.keys(messages.errors).length > 0) {
 
         // 5. If --html, write the HTML to disk before inlining images
         if (outputHtmlFlag) {
-            await generateHtmlFromHtml(htmlContent, pageMetadata, outputHtml);
+            fs.writeFileSync(outputHtml, htmlContent);
         }
 
-        // 6. Inline images as base64
-        //console.log('🖼️ Inlining images as base64...');
+        // 6. Transform relative file links to absolute URLs
         htmlContent = transformFileLinksToUrls(htmlContent);
-        //htmlContent = inlineImagesAsBase64(htmlContent, path.dirname(inputMd));
-        //console.log('✅ Images inlined.');
 
-        // 7.TEMP Generate a PDF from the new script
-        await generatePdfFromHtml(htmlContent, outputPdf);
+        // 7. Generate PDF from the main HTML content
+        const newPdf = await generatePdfFromHtml(htmlContent, mainPdfOptions);
 
-        // 7. Generate main content PDF from HTML
-        //console.log('🖨️ Generating main content PDF from HTML...');
-        const mainContentPdf = await mdToPdf(
-            { content: htmlContent },
-            {
-                body_class: pageMetadata.status || '',
-                stylesheet: MAIN_CONTENT_STYLESHEET,
-                pdf_options: pdfOptions,
-                beforePrint: async (page) => {
-                    await page.evaluate(() => new Promise((resolve) => {
-                        if (document.readyState === 'complete') resolve();
-                        else window.addEventListener('DOMContentLoaded', resolve);
-                    }));
-                },
-            }
-        );
-        //console.log('✅ Main content PDF generated.');
+        let mainPdfDoc = await PDFDocument.load(newPdf);
 
-        let mainPdfDoc = await PDFDocument.load(mainContentPdf.content);
-
-        // Generate and prepend title page, then reset page numbers if needed
+        // 8 Generate title page, prepend, then reset page numbers if needed
         if (pageMetadata.titlePage) {
             //console.log('📝 Generating title page PDF...');
-            const titlePagePdfBuffer = await generateTitlePagePdf(pageMetadata, pdfOptions);
+            let titlePageHtml = getTitlePage(pageMetadata);
+            titlePageHtml = transformFileLinksToUrls(titlePageHtml);
+            const titlePagePdfBuffer = await generatePdfFromHtml(titlePageHtml, titlePagePdfOptions);
             const titlePdfDoc = await PDFDocument.load(titlePagePdfBuffer);
             mainPdfDoc = await prependTitlePage(mainPdfDoc, titlePdfDoc);
             //console.log('✅ Title page prepended.');

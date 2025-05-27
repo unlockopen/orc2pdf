@@ -5,6 +5,8 @@ status: draft
 license: CC-BY 4.0
 ---
 
+<!-- [[titlepage]] -->
+
 # Test Case: Comprehensive Markdown Elements
 
 > **Note**
