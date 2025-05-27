@@ -122,19 +122,27 @@ echo "Hello, Markdown!"
 
 ---
 
-## Details/Summary
+## CRA inventory lists
 
-<details>
-  <summary>Click to expand for more info</summary>
+- [Inventory List Syntax](#) When we find a details tag inside a unordered list, we convert it as follows to generate the CRA inventory list items.
+  <details>
+    <summary>More info</summary>
 
-- **Title:** Example Title
-- **URL:** [Example](https://example.com)
-- **Publisher:** Example Publisher
-- **License:** MIT
-- **Type:** Article
-- **Publication date:** 2024-06-01
+  - **URL:** <https://www.markdownguide.org/basic-syntax/#lists>
+  - **Publisher:** Markdown Guide
+  - **License:** CC BY-SA 4.0
+  - **Publication date:** 2025
+  </details>
+- [Details/Summary Example](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details) - This item shows how to use the `<details>` and `<summary>` HTML tags inside Markdown for collapsible sections. The description itself explains that this is a demonstration of expandable content within a Markdown list.
+  <details>
+    <summary>More info</summary>
 
-</details>
+  - **URL:** <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details>
+  - **Publisher:** MDN Web Docs
+  - **License:** CC BY-SA 2.5
+  - **Type:** HTML Reference
+  - **Publication date:** 2025
+  </details>
 
 ---
 

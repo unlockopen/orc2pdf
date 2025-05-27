@@ -41,12 +41,12 @@ const titlePagePdfOptions = {
     footerTemplate: footer.replace('class="pageNumber"', ''),
 };
 
-console.log(`📄 Starting PDF generation for ${pageMetadata.title || inputMd}`);
+console.log(`📄 Starting PDF generation for \x1b[32m${pageMetadata.title || inputMd}\x1b[0m`);
 if (outputHtmlFlag) {
     console.log(`   - with HTML output: ${outputHtml}`);
 }
 if (pageMetadata.titlePage) {
-    console.log('   - with title page generation');
+    console.log('   - with title page');
 }
 // Display warnings
 if (Object.keys(messages.warnings).length > 0) {
