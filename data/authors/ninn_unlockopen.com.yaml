@@ -1,7 +1,7 @@
 # Filename must be author email address with @ replaced by -
-name:
-title:
-bio:
-email: info@ninnlangel.com
+name: Ninn Langel
+title: Operations engineer
+bio: Here is my bio. It is short.
+email: ninn@unlockopen.com
 # Picture file info_ninnlangel.com.jpg or info_ninnlangel.com.png must be saved
 # in ./data/authors/pictures/

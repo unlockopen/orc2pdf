@@ -3,6 +3,7 @@ version: 0.1.28
 date: May 12, 2025
 status: draft
 license: CC-BY 4.0
+authors: Ninn Langel<ninn@unlockopen.com>
 ---
 
 <!-- [[titlepage]] -->
@@ -179,6 +180,8 @@ sequenceDiagram
     A->>B: Hello Bob!
     B-->>A: Hello Alice!
 ```
+
+<!-- [[authors]] -->
 
 ## Footnotes
 
