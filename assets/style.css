@@ -212,8 +212,17 @@ ol li {
 }
 
 /* Styles for the blockquotes from legal documents */
+blockquote {
+    overflow: visible !important;
+    border-left: 6px solid lightgray;
+    border-radius: 6px !important;
+    padding: 1rem 1.5rem !important;
+    margin: 2rem 2rem !important;
+    font-size: 1rem;
+}
 
 .legal-excerpt {
+    border-left: none;
     font-family: var(--legal-font);
     font-style: normal;
     margin: 2rem 2rem !important;
@@ -225,6 +234,7 @@ ol li {
 ol li blockquote {
     margin-left: 0 !important;
 }
+
 
 /* Callout styles - all callouts get callout class and the corresponding class
     note, tip, important, warning, caution  */

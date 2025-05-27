@@ -1,6 +1,6 @@
 ---
-version: 0.1.28
-date: May 12, 2025
+version: 1.0
+date: May 27, 2025
 status: draft
 license: CC-BY 4.0
 authors: Ninn Langel<ninn@unlockopen.com>
