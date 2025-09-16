@@ -1,14 +1,18 @@
 {
-  "name": "md2pdf",
+  "name": "markdown-to-pdf",
   "version": "1.0.0",
   "description": "A flexible Markdown to PDF converter with support for custom themes, title pages, and author management",
   "type": "module",
   "main": "lib/index.js",
   "bin": {
-    "md2pdf": "./bin/cli.js"
+    "markdown-to-pdf": "./bin/cli.js"
   },
   "scripts": {
-    "test": "node bin/cli.js test.md",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "vitest run --config vitest.e2e.config.js",
+    "test:manual": "node bin/cli.js convert test.md",
     "dev": "node generate-pdf.js test.md"
   },
   "keywords": [
@@ -22,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/md2pdf"
+    "url": "https://github.com/yourusername/markdown-to-pdf"
   },
   "dependencies": {
     "chalk": "^5.6.2",
@@ -42,5 +46,10 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
+    "tmp": "^0.2.5",
+    "vitest": "^2.1.9"
   }
 }

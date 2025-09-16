@@ -4,20 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-md2pdf is a generic, configurable Markdown to PDF conversion package with CLI support. It features a theme system, project initialization, and flexible configuration options for different document types and styling needs.
+markdown-to-pdf is a generic, configurable Markdown to PDF conversion package with CLI support. It features a theme system, project initialization, and flexible configuration options for different document types and styling needs.
 
 ## Core Commands
 
 ### CLI Commands
 ```bash
 # Convert a markdown file
-md2pdf convert document.md
+markdown-to-pdf convert document.md
 
 # Initialize new project  
-md2pdf init my-project
+markdown-to-pdf init my-project
 
 # List available themes
-md2pdf themes
+markdown-to-pdf themes
 
 # Development/testing
 npm run test    # Convert test.md using CLI
@@ -39,7 +39,7 @@ node generate-pdf.js test.md
 ### Configuration System
 - **Config Manager** (`lib/config-manager.js`): Loads project configs and resolves themes
 - **Theme System**: `themes/` directory with built-in themes (default, minimal, academic)
-- **Project Configs**: Support for `md2pdf.config.json`, `md2pdf.config.js`, `.md2pdf.json`
+- **Project Configs**: Support for `markdown-to-pdf.config.json`, `markdown-to-pdf.config.js`, `.markdown-to-pdf.json`
 
 ### Processing Pipeline
 1. **Input Processing** (`lib/input-markdown-processor.js`): Parses frontmatter and processes markdown

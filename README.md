@@ -1,30 +1,30 @@
-# md2pdf
+# markdown-to-pdf
 
 A flexible Markdown to PDF converter with support for custom themes, title pages, and author management.
 
 ## Installation
 
 ```bash
-npm install -g md2pdf
+npm install -g markdown-to-pdf
 ```
 
 Or use directly without installation:
 ```bash
-npx md2pdf convert document.md
+npx markdown-to-pdf convert document.md
 ```
 
 ## Quick Start
 
 ### Convert a single file
 ```bash
-md2pdf convert document.md
+markdown-to-pdf convert document.md
 ```
 
 ### Initialize a new project
 ```bash
-md2pdf init my-docs
+markdown-to-pdf init my-docs
 cd my-docs
-md2pdf convert docs/example.md
+markdown-to-pdf convert docs/example.md
 ```
 
 ## CLI Commands
@@ -41,13 +41,13 @@ Convert a Markdown file to PDF
 
 **Examples:**
 ```bash
-md2pdf convert document.md
-md2pdf convert document.md -o output/final.pdf
-md2pdf convert document.md --theme minimal --html
+markdown-to-pdf convert document.md
+markdown-to-pdf convert document.md -o output/final.pdf
+markdown-to-pdf convert document.md --theme minimal --html
 ```
 
 ### `init [name]`
-Initialize a new md2pdf project with sample files
+Initialize a new markdown-to-pdf project with sample files
 
 **Options:**
 - `-t, --theme <name>` - Theme to use (default: 'default')
@@ -58,10 +58,10 @@ List available themes
 ## Configuration
 
 Projects can be configured using:
-- `md2pdf.config.json` (recommended)
-- `md2pdf.config.js`
-- `.md2pdf.json`
-- `package.json` (in `md2pdf` section)
+- `markdown-to-pdf.config.json` (recommended)
+- `markdown-to-pdf.config.js`
+- `.markdown-to-pdf.json`
+- `package.json` (in `markdown-to-pdf` section)
 
 **Example configuration:**
 ```json

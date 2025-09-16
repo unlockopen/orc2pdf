@@ -10,7 +10,7 @@ import { initProject } from '../lib/project-init.js';
 const program = new Command();
 
 program
-  .name('md2pdf')
+  .name('markdown-to-pdf')
   .description('Convert Markdown files to PDFs with custom themes and templates')
   .version('1.0.0');
 
