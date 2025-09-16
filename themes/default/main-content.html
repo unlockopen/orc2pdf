@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    {{stylesheetTag}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+    <style>
+        /* Mermaid container styling */
+        .mermaid-container {
+            text-align: center;
+            margin: 2rem 0;
+            break-inside: avoid;
+        }
+
+        .mermaid {
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: { fontFamily: 'inherit' },
+            flowchart: { useMaxWidth: true, htmlLabels: true },
+            sequence: { useMaxWidth: true },
+            gantt: { useMaxWidth: true }
+        });
+        window.mermaidReady = new Promise((resolve) => {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', checkMermaid);
+            } else { checkMermaid(); }
+            function checkMermaid() {
+                const mermaidElements = document.querySelectorAll('.mermaid');
+                if (mermaidElements.length === 0) { resolve(); return; }
+                let renderedCount = 0;
+                const totalCount = mermaidElements.length;
+                const checkRendered = () => {
+                    renderedCount++;
+                    if (renderedCount === totalCount) { setTimeout(() => resolve(), 100); }
+                };
+                mermaidElements.forEach((el, index) => {
+                    if (el.querySelector('svg')) { checkRendered(); }
+                    else {
+                        const observer = new MutationObserver((mutations) => {
+                            mutations.forEach((mutation) => {
+                                if (mutation.type === 'childList' &&
+                                    Array.from(mutation.addedNodes).some(node => node.tagName === 'SVG')) {
+                                    observer.disconnect(); checkRendered();
+                                }
+                            });
+                        });
+                        observer.observe(el, { childList: true, subtree: true });
+                        setTimeout(() => {
+                            if (!el.querySelector('svg')) { observer.disconnect(); checkRendered(); }
+                        }, 5000);
+                    }
+                });
+            }
+        });
+        window.checkMermaidStatus = () => {
+            const elements = document.querySelectorAll('.mermaid');
+            const rendered = document.querySelectorAll('.mermaid svg');
+            return { total: elements.length, rendered: rendered.length };
+        };
+    </script>
+</head>
+
+<body class="{{status}}">
+    {{content}}
+</body>
+
+</html>

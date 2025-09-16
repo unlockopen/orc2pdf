@@ -1,0 +1,7 @@
+# Filename must be author email address with @ replaced by -
+name:
+title:
+bio:
+email: {{ email }}
+# Picture file {{ authorId }}.jpg or {{ authorId }}.png must be saved
+# in ./data/authors/pictures/

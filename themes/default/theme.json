@@ -1,0 +1,17 @@
+{
+  "name": "default",
+  "description": "Default theme with professional styling",
+  "version": "1.0.0",
+  "pdfOptions": {
+    "displayHeaderFooter": true,
+    "printBackground": true,
+    "preferCSSPageSize": true,
+    "scale": 1.0
+  },
+  "features": {
+    "titlePage": true,
+    "tableOfContents": true,
+    "authorPages": true,
+    "syntaxHighlighting": true
+  }
+}

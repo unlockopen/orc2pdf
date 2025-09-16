@@ -1,0 +1,17 @@
+{
+  "name": "minimal",
+  "description": "Clean, minimal theme with reduced styling",
+  "version": "1.0.0",
+  "pdfOptions": {
+    "displayHeaderFooter": false,
+    "printBackground": true,
+    "preferCSSPageSize": true,
+    "scale": 1.0
+  },
+  "features": {
+    "titlePage": false,
+    "tableOfContents": true,
+    "authorPages": false,
+    "syntaxHighlighting": true
+  }
+}

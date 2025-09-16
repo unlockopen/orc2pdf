@@ -1,10 +1,37 @@
 {
+  "name": "md2pdf",
+  "version": "1.0.0",
+  "description": "A flexible Markdown to PDF converter with support for custom themes, title pages, and author management",
   "type": "module",
+  "main": "lib/index.js",
+  "bin": {
+    "md2pdf": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "node bin/cli.js test.md",
+    "dev": "node generate-pdf.js test.md"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "converter",
+    "puppeteer",
+    "documentation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/md2pdf"
+  },
   "dependencies": {
+    "chalk": "^5.6.2",
     "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
     "gray-matter": "^4.0.3",
     "highlight": "^0.2.4",
     "highlight.js": "^11.9.0",
+    "js-yaml": "^4.1.0",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.0.0",
     "markdown-it-callouts": "^1.0.0",
@@ -12,5 +39,8 @@
     "pdf-lib": "^1.17.1",
     "puppeteer": "^24.9.0",
     "serve-handler": "^6.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
